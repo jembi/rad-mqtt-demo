@@ -1,6 +1,6 @@
 # MQTT DEMO APPLICATION
 
-This is a demo application adapted from the Paho Android Service Example App. The Paho Android Service is an MQTT client library written in Java for developing applications on Android.
+This is a demo application adapted from the Paho Android Service Example App which can be found [https://github.com/eclipse/paho.mqtt.android]. The Paho Android Service is an MQTT client library written in Java for developing applications on Android.
 
 
 ## Get Started
