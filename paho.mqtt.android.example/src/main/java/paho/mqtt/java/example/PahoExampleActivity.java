@@ -41,11 +41,11 @@ public class PahoExampleActivity extends AppCompatActivity{
 
     MqttAndroidClient mqttAndroidClient;
 
-    final String serverUri = "tcp://iot.eclipse.org:1883";
+    final String serverUri = "tcp://mvsongs.co.za:1883";
 
     String clientId = "ExampleAndroidClient";
     final String subscriptionTopic = "exampleAndroidTopic";
-    final String publishTopic = "exampleAndroidPublishTopic";
+    final String publishTopic = "exampleAndroidTopic";
     final String publishMessage = "Hello World!";
 
 
