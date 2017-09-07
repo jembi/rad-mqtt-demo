@@ -1,0 +1,5 @@
+<resources>
+    <string name="app_name">RAD MQTT DEMO</string>
+    <string name="view_header">Subscribe</string>
+    <string name="action_settings">Settings</string>
+</resources>
