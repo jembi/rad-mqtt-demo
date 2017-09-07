@@ -25,7 +25,6 @@ import java.util.ArrayList;
 public class SubscribeActivity extends AppCompatActivity {
 
     public static final String SERVER_URI = "iot.eclipse.org:1883";
-    public static final String PORT = "1883";
     public static final String CLIENT_ID = "RAD_DEMO APP";
     public static final String SUBSCRIPTION_TOPIC = "RAD Demo Topic";
 
