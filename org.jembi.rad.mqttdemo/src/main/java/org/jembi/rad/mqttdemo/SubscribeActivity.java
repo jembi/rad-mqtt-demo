@@ -1,11 +1,13 @@
 package org.jembi.rad.mqttdemo;
 
 import android.os.Bundle;
+import android.provider.Settings;
 import android.support.design.widget.Snackbar;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
+import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 
@@ -20,13 +22,7 @@ import org.eclipse.paho.client.mqttv3.MqttConnectOptions;
 import org.eclipse.paho.client.mqttv3.MqttException;
 import org.eclipse.paho.client.mqttv3.MqttMessage;
 
-import java.util.ArrayList;
-
 public class SubscribeActivity extends AppCompatActivity {
-
-    public static final String SERVER_URI = "iot.eclipse.org:1883";
-    public static final String CLIENT_ID = "RAD_DEMO APP";
-    public static final String SUBSCRIPTION_TOPIC = "RAD Demo Topic";
 
     MqttAndroidClient mqttAndroidClient;
 
@@ -37,9 +33,9 @@ public class SubscribeActivity extends AppCompatActivity {
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
 
-        RecyclerView.LayoutManager mLayoutManager = new LinearLayoutManager(this);
-
-        mqttAndroidClient = new MqttAndroidClient(getApplicationContext(), SERVER_URI, CLIENT_ID);
+        final String serverUri = this.getString(R.string.server_uri);
+        final String clientId = this.getString(R.string.client_id);
+        mqttAndroidClient = new MqttAndroidClient(getApplicationContext(), serverUri, clientId);
         mqttAndroidClient.setCallback(new MqttCallbackExtended() {
             @Override
             public void connectComplete(boolean reconnect, String serverURI) {
@@ -75,8 +71,7 @@ public class SubscribeActivity extends AppCompatActivity {
 
 
         try {
-            //addToHistory("Connecting to " + serverUri);
-            mqttAndroidClient.connect(mqttConnectOptions, null, new IMqttActionListener() {
+            IMqttToken token = mqttAndroidClient.connect(mqttConnectOptions, null, new IMqttActionListener() {
                 @Override
                 public void onSuccess(IMqttToken asyncActionToken) {
                     DisconnectedBufferOptions disconnectedBufferOptions = new DisconnectedBufferOptions();
@@ -90,7 +85,8 @@ public class SubscribeActivity extends AppCompatActivity {
 
                 @Override
                 public void onFailure(IMqttToken asyncActionToken, Throwable exception) {
-                    addToHistory("Failed to connect to: " + SERVER_URI);
+                    addToHistory("Failed to connect to: " + serverUri);
+                    exception.printStackTrace();
                 }
             });
 
@@ -123,8 +119,9 @@ public class SubscribeActivity extends AppCompatActivity {
     }
 
     public void subscribeToTopic(){
+        final String subscriptionTopic = this.getString(R.string.topic_name);
         try {
-            mqttAndroidClient.subscribe(SUBSCRIPTION_TOPIC, 0, null, new IMqttActionListener() {
+            mqttAndroidClient.subscribe(subscriptionTopic, 0, null, new IMqttActionListener() {
                 @Override
                 public void onSuccess(IMqttToken asyncActionToken) {
                     addToHistory("Subscribed!");
@@ -137,7 +134,7 @@ public class SubscribeActivity extends AppCompatActivity {
             });
 
             // THIS DOES NOT WORK!
-            mqttAndroidClient.subscribe(SUBSCRIPTION_TOPIC, 0, new IMqttMessageListener() {
+            mqttAndroidClient.subscribe(subscriptionTopic, 0, new IMqttMessageListener() {
                 @Override
                 public void messageArrived(String topic, MqttMessage message) throws Exception {
                     // message Arrived!
