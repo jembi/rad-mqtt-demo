@@ -1,10 +1,8 @@
 package org.jembi.rad.mqttdemo;
 
 import android.os.Bundle;
-import android.provider.Settings;
 import android.support.design.widget.Snackbar;
 import android.support.v7.app.AppCompatActivity;
-import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
 import android.util.Log;
@@ -25,7 +23,6 @@ import org.jembi.rad.mqttdemo.model.Message;
 
 import java.util.ArrayList;
 import java.util.Date;
-import java.util.List;
 
 public class SubscribeActivity extends AppCompatActivity {
 
@@ -53,22 +50,22 @@ public class SubscribeActivity extends AppCompatActivity {
             public void connectComplete(boolean reconnect, String serverURI) {
 
                 if (reconnect) {
-                    addToHistory("Reconnected to : " + serverURI);
+                    displayMessage("Reconnected to : " + serverURI);
                     // Because Clean Session is true, we need to re-subscribe
                     subscribeToTopic();
                 } else {
-                    addToHistory("Connected to: " + serverURI);
+                    displayMessage("Connected to: " + serverURI);
                 }
             }
 
             @Override
             public void connectionLost(Throwable cause) {
-                addToHistory("The Connection was lost.");
+                displayMessage("The Connection was lost.");
             }
 
             @Override
             public void messageArrived(String topic, MqttMessage message) throws Exception {
-                addToHistory("Incoming message: " + new String(message.getPayload()));
+                displayMessage("Incoming message: " + new String(message.getPayload()));
             }
 
             @Override
@@ -97,14 +94,14 @@ public class SubscribeActivity extends AppCompatActivity {
 
                 @Override
                 public void onFailure(IMqttToken asyncActionToken, Throwable exception) {
-                    addToHistory("Failed to connect to: " + serverUri);
-                    exception.printStackTrace();
+                    Log.e("LOG", "Exception while connecting", exception);
+                    displayMessage("Failed to connect to: " + serverUri);
                 }
             });
 
 
         } catch (MqttException ex){
-            ex.printStackTrace();
+            Log.e("LOG", "Exception while connecting", ex);
         }
     }
 
@@ -135,12 +132,12 @@ public class SubscribeActivity extends AppCompatActivity {
             mqttAndroidClient.subscribe(subscriptionTopic, 0, null, new IMqttActionListener() {
                 @Override
                 public void onSuccess(IMqttToken asyncActionToken) {
-                    addToHistory("Subscribed!");
+                    displayMessage("Subscribed!");
                 }
 
                 @Override
                 public void onFailure(IMqttToken asyncActionToken, Throwable exception) {
-                    addToHistory("Failed to subscribe");
+                    displayMessage("Failed to subscribe");
                 }
             });
 
@@ -155,14 +152,13 @@ public class SubscribeActivity extends AppCompatActivity {
             });
 
         } catch (MqttException ex){
-            System.err.println("Exception whilst subscribing");
-            ex.printStackTrace();
+            Log.e("LOG", "Exception while subscribing", ex);
         }
     }
 
 
-    private void addToHistory(String mainText){
-        System.out.println("LOG: " + mainText);
+    private void displayMessage(String mainText){
+        Log.i("LOG", mainText);
         Snackbar.make(findViewById(android.R.id.content), mainText, Snackbar.LENGTH_LONG)
                 .setAction("Action", null).show();
 
