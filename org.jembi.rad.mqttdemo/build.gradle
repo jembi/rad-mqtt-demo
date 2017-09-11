@@ -33,6 +33,7 @@ dependencies {
     compile "com.android.support:design:${rootProject.ext.supportLibVersion}"
     compile "com.android.support:cardview-v7:${rootProject.ext.supportLibVersion}"
     compile "com.android.support:support-v4:${rootProject.ext.supportLibVersion}"
+    compile "com.android.support:recyclerview-v7:${rootProject.ext.supportLibVersion}"
     compile "org.eclipse.paho:org.eclipse.paho.client.mqttv3:${rootProject.ext.clientVersion}"
     compile(project(':org.eclipse.paho.android.service')) {
         //exclude module: "org.eclipse.paho.client.mqttv3"

@@ -21,10 +21,16 @@ import org.eclipse.paho.client.mqttv3.MqttCallbackExtended;
 import org.eclipse.paho.client.mqttv3.MqttConnectOptions;
 import org.eclipse.paho.client.mqttv3.MqttException;
 import org.eclipse.paho.client.mqttv3.MqttMessage;
+import org.jembi.rad.mqttdemo.model.Message;
+
+import java.util.ArrayList;
+import java.util.Date;
+import java.util.List;
 
 public class SubscribeActivity extends AppCompatActivity {
 
-    MqttAndroidClient mqttAndroidClient;
+    private MqttAndroidClient mqttAndroidClient;
+    private MessageViewAdapter messageAdapter;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -32,6 +38,12 @@ public class SubscribeActivity extends AppCompatActivity {
         setContentView(R.layout.activity_subscribe);
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
+
+        // set up messages content screen
+        RecyclerView messageView = (RecyclerView) findViewById(R.id.messages);
+        messageAdapter = new MessageViewAdapter(new ArrayList<Message>());
+        messageView.setAdapter(messageAdapter);
+
 
         final String serverUri = this.getString(R.string.server_uri);
         final String clientId = this.getString(R.string.client_id);
@@ -94,7 +106,6 @@ public class SubscribeActivity extends AppCompatActivity {
         } catch (MqttException ex){
             ex.printStackTrace();
         }
-
     }
 
     @Override
@@ -138,7 +149,8 @@ public class SubscribeActivity extends AppCompatActivity {
                 @Override
                 public void messageArrived(String topic, MqttMessage message) throws Exception {
                     // message Arrived!
-                    System.out.println("Message: " + topic + " : " + new String(message.getPayload()));
+                    String messageContent = new String(message.getPayload());
+                    messageAdapter.addMessage(new Message(new Date(), messageContent));
                 }
             });
 
