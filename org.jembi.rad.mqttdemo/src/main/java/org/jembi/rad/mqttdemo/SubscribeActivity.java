@@ -29,6 +29,7 @@ import java.util.prefs.Preferences;
 public class SubscribeActivity extends AppCompatActivity {
 
     private MqttAndroidClient mqttAndroidClient;
+    private RecyclerView messageView;
     private MessageViewAdapter messageAdapter;
 
     @Override
@@ -39,9 +40,10 @@ public class SubscribeActivity extends AppCompatActivity {
         setSupportActionBar(toolbar);
 
         // set up messages content screen
-        RecyclerView messageView = (RecyclerView) findViewById(R.id.messages);
+        messageView = (RecyclerView) findViewById(R.id.messages);
         messageAdapter = new MessageViewAdapter(new ArrayList<Message>());
         messageView.setAdapter(messageAdapter);
+        messageAdapter.addMessage(new Message(new Date(), "Welcome to the RAD MQTT Demo App"));
 
 
         final String serverUri = this.getString(R.string.server_uri);
@@ -67,12 +69,12 @@ public class SubscribeActivity extends AppCompatActivity {
 
             @Override
             public void messageArrived(String topic, MqttMessage message) throws Exception {
-                displayMessage("Incoming message: " + new String(message.getPayload()));
+                // this callback is unnecessary because we will request a separate callback after subscription to a topic
             }
 
             @Override
             public void deliveryComplete(IMqttDeliveryToken token) {
-
+                // we aren't sending messages, so no need to implement this callback method
             }
         });
 
@@ -136,12 +138,12 @@ public class SubscribeActivity extends AppCompatActivity {
             mqttAndroidClient.subscribe(subscriptionTopic, 0, null, new IMqttActionListener() {
                 @Override
                 public void onSuccess(IMqttToken asyncActionToken) {
-                    displayMessage("Subscribed!");
+                    displayMessage("Subscribed to: " + subscriptionTopic);
                 }
 
                 @Override
                 public void onFailure(IMqttToken asyncActionToken, Throwable exception) {
-                    displayMessage("Failed to subscribe");
+                    displayMessage("Failed to subscribe to: " + subscriptionTopic);
                 }
             });
 
@@ -152,6 +154,7 @@ public class SubscribeActivity extends AppCompatActivity {
                     // message Arrived!
                     String messageContent = new String(message.getPayload());
                     messageAdapter.addMessage(new Message(new Date(), messageContent));
+                    messageView.smoothScrollToPosition(messageAdapter.getItemCount());
                 }
             });
 
@@ -165,6 +168,5 @@ public class SubscribeActivity extends AppCompatActivity {
         Log.i("LOG", mainText);
         Snackbar.make(findViewById(android.R.id.content), mainText, Snackbar.LENGTH_LONG)
                 .setAction("Action", null).show();
-
     }
 }

@@ -9,7 +9,8 @@ import android.widget.TextView;
 
 import org.jembi.rad.mqttdemo.model.Message;
 
-import java.text.SimpleDateFormat;
+import java.text.DateFormat;
+import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -20,13 +21,17 @@ public class MessageViewAdapter extends RecyclerView.Adapter<MessageViewAdapter.
     private final List<Message> values;
 
     public MessageViewAdapter(List<Message> items) {
+        if (items == null) {
+            // ensure the list is always initialised
+            items = new ArrayList<>();
+        }
         values = items;
     }
 
     public void addMessage(Message message) {
         values.add(message);
         notifyItemInserted(values.size() - 1);
-        Log.i("LOG", "Added Message " + message.getMessage());
+        Log.i("LOG", "Incoming message: " + message.getMessage());
     }
 
     @Override
@@ -38,9 +43,9 @@ public class MessageViewAdapter extends RecyclerView.Adapter<MessageViewAdapter.
 
     @Override
     public void onBindViewHolder(final ViewHolder holder, int position) {
-        Log.i("LOG","binding");
+        Log.i("LOG", "onBind: " + position);
         holder.item = values.get(position);
-        holder.dateTimeView.setText(new SimpleDateFormat("dd MMM yyyy HH:mm").format(holder.item.getDatetime()));
+        holder.dateTimeView.setText(DateFormat.getDateTimeInstance().format(holder.item.getDatetime()));
         holder.messageView.setText(holder.item.getMessage());
     }
 
