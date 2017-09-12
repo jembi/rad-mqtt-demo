@@ -1,5 +1,6 @@
 package org.jembi.rad.mqttdemo;
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.support.design.widget.Snackbar;
 import android.support.v7.app.AppCompatActivity;
@@ -23,6 +24,7 @@ import org.jembi.rad.mqttdemo.model.Message;
 
 import java.util.ArrayList;
 import java.util.Date;
+import java.util.prefs.Preferences;
 
 public class SubscribeActivity extends AppCompatActivity {
 
@@ -121,6 +123,8 @@ public class SubscribeActivity extends AppCompatActivity {
 
         //noinspection SimplifiableIfStatement
         if (id == R.id.action_settings) {
+            Intent settingsIntent = new Intent(SubscribeActivity.this, SettingsActivity.class);
+            startActivity(settingsIntent);
             return true;
         }
         return super.onOptionsItemSelected(item);
