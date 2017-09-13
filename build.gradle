@@ -17,7 +17,6 @@ ext{
     compileSdkVersion = 24
     buildToolsVersion = '23.0.3'
 
-
     group = 'org.eclipse.paho'
 
     sampleArchivesBaseName = 'org.eclipse.paho.android.sample'
@@ -31,6 +30,9 @@ ext{
     mavenUrl = "https://repo.eclipse.org/content/repositories/paho-releases/"
 
     supportLibVersion = '24.2.1'
+
+    constraintLibVersion = '1.0.2'
+
 
 }
 
