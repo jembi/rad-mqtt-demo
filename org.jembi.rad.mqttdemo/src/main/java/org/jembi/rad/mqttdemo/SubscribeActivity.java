@@ -9,6 +9,7 @@ import android.support.v7.widget.Toolbar;
 import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.view.View;
 
 import org.eclipse.paho.android.service.MqttAndroidClient;
 import org.eclipse.paho.client.mqttv3.DisconnectedBufferOptions;
@@ -24,9 +25,12 @@ import org.jembi.rad.mqttdemo.model.Message;
 
 import java.util.ArrayList;
 import java.util.Date;
-import java.util.prefs.Preferences;
 
 public class SubscribeActivity extends AppCompatActivity {
+
+    private static int qos = 1;
+    private static boolean cleanSession = false;
+    private static boolean automaticReconnect = true;
 
     private MqttAndroidClient mqttAndroidClient;
     private RecyclerView messageView;
@@ -53,10 +57,13 @@ public class SubscribeActivity extends AppCompatActivity {
             @Override
             public void connectComplete(boolean reconnect, String serverURI) {
 
+                goOnline();
+
                 if (reconnect) {
                     displayMessage("Reconnected to : " + serverURI);
-                    // Because Clean Session is true, we need to re-subscribe
-                    subscribeToTopic();
+                    if (cleanSession) {
+                        subscribeToTopic();
+                    }
                 } else {
                     displayMessage("Connected to: " + serverURI);
                 }
@@ -65,6 +72,7 @@ public class SubscribeActivity extends AppCompatActivity {
             @Override
             public void connectionLost(Throwable cause) {
                 displayMessage("The Connection was lost.");
+                goOffline();
             }
 
             @Override
@@ -79,8 +87,8 @@ public class SubscribeActivity extends AppCompatActivity {
         });
 
         MqttConnectOptions mqttConnectOptions = new MqttConnectOptions();
-        mqttConnectOptions.setAutomaticReconnect(true);
-        mqttConnectOptions.setCleanSession(false);
+        mqttConnectOptions.setAutomaticReconnect(automaticReconnect);
+        mqttConnectOptions.setCleanSession(cleanSession);
 
 
         try {
@@ -135,7 +143,7 @@ public class SubscribeActivity extends AppCompatActivity {
     public void subscribeToTopic(){
         final String subscriptionTopic = this.getString(R.string.topic_name);
         try {
-            mqttAndroidClient.subscribe(subscriptionTopic, 0, null, new IMqttActionListener() {
+            mqttAndroidClient.subscribe(subscriptionTopic, qos, null, new IMqttActionListener() {
                 @Override
                 public void onSuccess(IMqttToken asyncActionToken) {
                     displayMessage("Subscribed to: " + subscriptionTopic);
@@ -147,7 +155,6 @@ public class SubscribeActivity extends AppCompatActivity {
                 }
             });
 
-            // THIS DOES NOT WORK!
             mqttAndroidClient.subscribe(subscriptionTopic, 0, new IMqttMessageListener() {
                 @Override
                 public void messageArrived(String topic, MqttMessage message) throws Exception {
@@ -168,5 +175,13 @@ public class SubscribeActivity extends AppCompatActivity {
         Log.i("LOG", mainText);
         Snackbar.make(findViewById(android.R.id.content), mainText, Snackbar.LENGTH_LONG)
                 .setAction("Action", null).show();
+    }
+
+    private void goOffline() {
+        findViewById(R.id.offline_icon).setVisibility(View.VISIBLE);
+    }
+
+    private void goOnline() {
+        findViewById(R.id.offline_icon).setVisibility(View.INVISIBLE);
     }
 }
