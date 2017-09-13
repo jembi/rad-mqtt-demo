@@ -7,7 +7,6 @@
     <string name="server_uri_label">Server URI</string>
     <string name="server_uri">tcp://iot.eclipse.org:1883</string>
     <string name="client_id_label">Client ID</string>
-    <string name="client_id">RAD MQTT DEMO app</string>
     <string name="settings_header">Subscribe</string>
     <string name="title_offline_settings">Offline</string>
     <string name="title_activity_settings">Settings</string>

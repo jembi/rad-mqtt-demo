@@ -38,7 +38,6 @@
 
     <EditTextPreference android:key="@string/client_id_label"
         android:title="@string/client_id_label"
-        android:defaultValue="@string/client_id"
         android:capitalize="words"
         android:selectAllOnFocus="true"
         android:maxLines="1"
