@@ -2,11 +2,11 @@
     <string name="app_name">RAD MQTT DEMO</string>
     <string name="view_header">Subscribe</string>
     <string name="action_settings">Settings</string>
-    <string name="topic_label">Topic: </string>
+    <string name="topic_label">Topic</string>
     <string name="topic_name">RAD Demo Topic</string>
-    <string name="server_uri_label">Server URI: </string>
+    <string name="server_uri_label">Server URI</string>
     <string name="server_uri">tcp://iot.eclipse.org:1883</string>
-    <string name="client_id_label">Client ID: </string>
+    <string name="client_id_label">Client ID</string>
     <string name="client_id">RAD MQTT DEMO app</string>
     <string name="settings_header">Subscribe</string>
     <string name="topic_label_and_name">Topic: RAD Demo Topic</string>
