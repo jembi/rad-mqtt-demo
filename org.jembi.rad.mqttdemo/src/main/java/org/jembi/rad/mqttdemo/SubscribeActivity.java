@@ -1,7 +1,9 @@
 package org.jembi.rad.mqttdemo;
 
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.os.Bundle;
+import android.preference.PreferenceManager;
 import android.support.design.widget.Snackbar;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.RecyclerView;
@@ -49,9 +51,9 @@ public class SubscribeActivity extends AppCompatActivity {
         messageView.setAdapter(messageAdapter);
         messageAdapter.addMessage(new Message(new Date(), "Welcome to the RAD MQTT Demo App"));
 
-
-        final String serverUri = this.getString(R.string.server_uri);
-        final String clientId = this.getString(R.string.client_id);
+        SharedPreferences preferences = PreferenceManager.getDefaultSharedPreferences(this);
+        final String serverUri =  preferences.getString(this.getString(R.string.server_uri_label), " ");
+        final String clientId =  preferences.getString(this.getString(R.string.client_id_label), " ");
         mqttAndroidClient = new MqttAndroidClient(getApplicationContext(), serverUri, clientId);
         mqttAndroidClient.setCallback(new MqttCallbackExtended() {
             @Override
