@@ -1,5 +1,6 @@
 package org.jembi.rad.mqttdemo;
 
+import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Bundle;
@@ -27,6 +28,7 @@ import org.jembi.rad.mqttdemo.model.Message;
 
 import java.util.ArrayList;
 import java.util.Date;
+import java.util.UUID;
 
 public class SubscribeActivity extends AppCompatActivity {
 
@@ -34,6 +36,7 @@ public class SubscribeActivity extends AppCompatActivity {
     private static boolean cleanSession = false;
     private static boolean automaticReconnect = true;
 
+    private SharedPreferences preferences;
     private MqttAndroidClient mqttAndroidClient;
     private RecyclerView messageView;
     private MessageViewAdapter messageAdapter;
@@ -51,9 +54,19 @@ public class SubscribeActivity extends AppCompatActivity {
         messageView.setAdapter(messageAdapter);
         messageAdapter.addMessage(new Message(new Date(), "Welcome to the RAD MQTT Demo App"));
 
-        SharedPreferences preferences = PreferenceManager.getDefaultSharedPreferences(this);
-        final String serverUri =  preferences.getString(this.getString(R.string.server_uri_label), " ");
-        final String clientId =  preferences.getString(this.getString(R.string.client_id_label), " ");
+        // get connection details from preferences
+        preferences = PreferenceManager.getDefaultSharedPreferences(this);
+        final String serverUri =  preferences.getString(this.getString(R.string.server_uri_label), this.getString(R.string.server_uri));
+        String clientId =  preferences.getString(this.getString(R.string.client_id_label), null);
+
+        if (clientId == null) {
+            // set the clientId if it hasn't been set already (i.e. probably the first time using the application)
+            clientId = UUID.randomUUID().toString();
+            SharedPreferences.Editor editor = preferences.edit();
+            editor.putString(this.getString(R.string.client_id_label), clientId);
+            editor.commit();
+        }
+
         mqttAndroidClient = new MqttAndroidClient(getApplicationContext(), serverUri, clientId);
         mqttAndroidClient.setCallback(new MqttCallbackExtended() {
             @Override
@@ -143,7 +156,7 @@ public class SubscribeActivity extends AppCompatActivity {
     }
 
     public void subscribeToTopic(){
-        final String subscriptionTopic = this.getString(R.string.topic_name);
+        final String subscriptionTopic = preferences.getString(this.getString(R.string.topic_label), this.getString(R.string.topic_name));
         try {
             mqttAndroidClient.subscribe(subscriptionTopic, qos, null, new IMqttActionListener() {
                 @Override
