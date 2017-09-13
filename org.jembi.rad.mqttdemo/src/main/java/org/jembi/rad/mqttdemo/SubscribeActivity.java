@@ -9,6 +9,7 @@ import android.support.v7.widget.Toolbar;
 import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.view.View;
 
 import org.eclipse.paho.android.service.MqttAndroidClient;
 import org.eclipse.paho.client.mqttv3.DisconnectedBufferOptions;
@@ -24,7 +25,6 @@ import org.jembi.rad.mqttdemo.model.Message;
 
 import java.util.ArrayList;
 import java.util.Date;
-import java.util.prefs.Preferences;
 
 public class SubscribeActivity extends AppCompatActivity {
 
@@ -57,6 +57,8 @@ public class SubscribeActivity extends AppCompatActivity {
             @Override
             public void connectComplete(boolean reconnect, String serverURI) {
 
+                goOnline();
+
                 if (reconnect) {
                     displayMessage("Reconnected to : " + serverURI);
                     if (cleanSession) {
@@ -70,6 +72,7 @@ public class SubscribeActivity extends AppCompatActivity {
             @Override
             public void connectionLost(Throwable cause) {
                 displayMessage("The Connection was lost.");
+                goOffline();
             }
 
             @Override
@@ -172,5 +175,13 @@ public class SubscribeActivity extends AppCompatActivity {
         Log.i("LOG", mainText);
         Snackbar.make(findViewById(android.R.id.content), mainText, Snackbar.LENGTH_LONG)
                 .setAction("Action", null).show();
+    }
+
+    private void goOffline() {
+        findViewById(R.id.offline_icon).setVisibility(View.VISIBLE);
+    }
+
+    private void goOnline() {
+        findViewById(R.id.offline_icon).setVisibility(View.INVISIBLE);
     }
 }
