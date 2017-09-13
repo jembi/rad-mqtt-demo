@@ -28,6 +28,10 @@ import java.util.prefs.Preferences;
 
 public class SubscribeActivity extends AppCompatActivity {
 
+    private static int qos = 1;
+    private static boolean cleanSession = false;
+    private static boolean automaticReconnect = true;
+
     private MqttAndroidClient mqttAndroidClient;
     private RecyclerView messageView;
     private MessageViewAdapter messageAdapter;
@@ -55,8 +59,9 @@ public class SubscribeActivity extends AppCompatActivity {
 
                 if (reconnect) {
                     displayMessage("Reconnected to : " + serverURI);
-                    // Because Clean Session is true, we need to re-subscribe
-                    subscribeToTopic();
+                    if (cleanSession) {
+                        subscribeToTopic();
+                    }
                 } else {
                     displayMessage("Connected to: " + serverURI);
                 }
@@ -79,8 +84,8 @@ public class SubscribeActivity extends AppCompatActivity {
         });
 
         MqttConnectOptions mqttConnectOptions = new MqttConnectOptions();
-        mqttConnectOptions.setAutomaticReconnect(true);
-        mqttConnectOptions.setCleanSession(false);
+        mqttConnectOptions.setAutomaticReconnect(automaticReconnect);
+        mqttConnectOptions.setCleanSession(cleanSession);
 
 
         try {
@@ -135,7 +140,7 @@ public class SubscribeActivity extends AppCompatActivity {
     public void subscribeToTopic(){
         final String subscriptionTopic = this.getString(R.string.topic_name);
         try {
-            mqttAndroidClient.subscribe(subscriptionTopic, 0, null, new IMqttActionListener() {
+            mqttAndroidClient.subscribe(subscriptionTopic, qos, null, new IMqttActionListener() {
                 @Override
                 public void onSuccess(IMqttToken asyncActionToken) {
                     displayMessage("Subscribed to: " + subscriptionTopic);
