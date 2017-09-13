@@ -152,7 +152,6 @@ public class SubscribeActivity extends AppCompatActivity {
                 }
             });
 
-            // THIS DOES NOT WORK!
             mqttAndroidClient.subscribe(subscriptionTopic, 0, new IMqttMessageListener() {
                 @Override
                 public void messageArrived(String topic, MqttMessage message) throws Exception {
