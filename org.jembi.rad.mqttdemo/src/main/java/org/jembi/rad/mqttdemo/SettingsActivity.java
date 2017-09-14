@@ -34,6 +34,10 @@ import java.util.List;
  * API Guide</a> for more information on developing a Settings UI.
  */
 public class SettingsActivity extends PreferenceActivity {
+    public final static String NOTIFICATION_NEW_MESSAGE_RINGTONE = "notifications_new_message_ringtone";
+    public final static String NOTIFICATION_NEW_MESSAGE_ENABLED = "notifications_new_message";
+    public final static String NOTIFICATION_NEW_MESSAGE_VIBRATE = "notifications_new_message_vibrate";
+
     /**
      * A preference value change listener that updates the preference's summary
      * to reflect its new value.
@@ -176,7 +180,6 @@ public class SettingsActivity extends PreferenceActivity {
             // to their values. When their values change, their summaries are
             // updated to reflect the new value, per the Android Design
             // guidelines.
-            bindPreferenceSummaryToValue(findPreference("example_text"));
             bindPreferenceSummaryToValue(findPreference(getText(R.string.server_uri_label)));
             bindPreferenceSummaryToValue(findPreference(getText(R.string.client_id_label)));
             bindPreferenceSummaryToValue(findPreference(getText(R.string.topic_label)));
@@ -210,7 +213,7 @@ public class SettingsActivity extends PreferenceActivity {
             // to their values. When their values change, their summaries are
             // updated to reflect the new value, per the Android Design
             // guidelines.
-            bindPreferenceSummaryToValue(findPreference("notifications_new_message_ringtone"));
+            bindPreferenceSummaryToValue(findPreference(NOTIFICATION_NEW_MESSAGE_RINGTONE));
         }
 
         @Override

@@ -11,6 +11,11 @@
     <string name="title_offline_settings">Offline</string>
     <string name="title_activity_settings">Settings</string>
 
+    <!-- Strings related to Notication -->
+    <string name="alert_notification_ticker">A new Demo MQTT message has arrived</string>
+    <string name="alert_notification_title">A new Demo MQTT message</string>
+    <string name="alert_notification_subtitle">On channel %1$s</string>
+
     <!-- Strings related to Settings -->
     <!-- Example General settings -->
     <string name="pref_header_general">General</string>
