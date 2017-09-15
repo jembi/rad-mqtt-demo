@@ -5,6 +5,8 @@ import android.content.Context;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteOpenHelper;
+import android.os.AsyncTask;
+import android.util.Log;
 
 import org.jembi.rad.mqttdemo.model.Message;
 
@@ -12,7 +14,6 @@ import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
-import static android.database.sqlite.SQLiteDatabase.*;
 import static org.jembi.rad.mqttdemo.database.MessageDBContract.*;
 import static org.jembi.rad.mqttdemo.database.MessageDBContract.MessageEntry.COLUMN_NAME_DATE;
 import static org.jembi.rad.mqttdemo.database.MessageDBContract.MessageEntry.COLUMN_NAME_MESSAGE_TEXT;
@@ -32,7 +33,7 @@ public class MessageDBOpenHelper extends SQLiteOpenHelper {
 
     public MessageDBOpenHelper(Context context) {
         super(context, DATABASE_NAME, null, DATABASE_VERSION);
-        open();
+        openDBConnection();
     }
 
 
@@ -52,24 +53,47 @@ public class MessageDBOpenHelper extends SQLiteOpenHelper {
         onUpgrade(sqLiteDatabase, oldVersion, newVersion);
     }
 
-    public void insertMessage( Message message) {
-        open();
-        ContentValues contentValues = createContentValues(message);
-        database.insert(TABLE_NAME, null, contentValues);
+    public List<Message> getPreviousMessages() {
+        try {
+            new GetPreviousMessagesTask().execute();
+        } catch (Exception e) {
+            Log.e("LOG", "Could not retrieve older messages due to error " + e.getMessage());
+        }
+        return new ArrayList<>();
     }
 
-    public List<Message> getPreviousMessages() {
-        String[] projection = {MessageEntry.COLUMN_NAME_DATE, MessageEntry.COLUMN_NAME_MESSAGE_TEXT};
-        String selectionCriteria = MessageEntry.COLUMN_NAME_DATE + " <  ?";
-        String[] selectionArgs = {String.valueOf(new Date().getTime())};
-        String sortOrder = MessageEntry.COLUMN_NAME_DATE + " DESC";
-        open();
-        Cursor cursor = database.query(MessageEntry.TABLE_NAME,
-                projection, selectionCriteria, selectionArgs, null, null, sortOrder);
+    public void insertMessage(Message message) {
+        new InsertMessageTask().execute(message);
+    }
 
-        List<Message> messages = readFromCursor(cursor);
+    private class GetPreviousMessagesTask extends AsyncTask<Void, Void, Cursor> {
 
-        return messages;
+        @Override
+        protected void onPreExecute() {
+            super.onPreExecute();
+            Log.i("LOG", "Retrieving previous messages");
+            openDBConnection();
+
+        }
+
+        @Override
+        protected Cursor doInBackground(Void... params) {
+            String[] projection = {MessageEntry.COLUMN_NAME_DATE, MessageEntry.COLUMN_NAME_MESSAGE_TEXT};
+            String selectionCriteria = MessageEntry.COLUMN_NAME_DATE + " <  ?";
+            String[] selectionArgs = {String.valueOf(new Date().getTime())};
+            String sortOrder = MessageEntry.COLUMN_NAME_DATE + " DESC";
+            Cursor cursor = database.query(MessageEntry.TABLE_NAME,
+                    projection, selectionCriteria, selectionArgs, null, null, sortOrder);
+
+             return cursor;
+        }
+
+        @Override
+        protected void onPostExecute(Cursor cursor) {
+            super.onPostExecute(cursor);
+            readFromCursor(cursor);
+            closeDBConnection();
+        }
     }
 
     private List<Message> readFromCursor(Cursor cursor) {
@@ -82,10 +106,40 @@ public class MessageDBOpenHelper extends SQLiteOpenHelper {
         return messages;
     }
 
+    private class InsertMessageTask extends AsyncTask<Message, Integer, Void> {
 
-    private void open() {
+        @Override
+        protected void onPreExecute() {
+            super.onPreExecute();
+            openDBConnection();
+            Log.i("LOG", "Saving message");
+
+        }
+
+        @Override
+        protected Void doInBackground(Message... messages) {
+            ContentValues contentValues = createContentValues(messages[0]);
+            database.insert(TABLE_NAME, null, contentValues);
+            return null;
+        }
+
+        @Override
+        protected void onPostExecute(Void aVoid) {
+            super.onPostExecute(aVoid);
+            Log.i("LOG", "Message saved");
+            closeDBConnection();
+        }
+    }
+
+    private void openDBConnection() {
         if(database == null) {
             database = this.getWritableDatabase();
+        }
+    }
+
+    private void closeDBConnection() {
+        if(database != null) {
+            database.close();
         }
     }
 

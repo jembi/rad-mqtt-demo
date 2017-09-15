@@ -21,6 +21,7 @@ import org.jembi.rad.mqttdemo.service.MessageService;
 
 import java.util.ArrayList;
 import java.util.Date;
+import java.util.List;
 
 public class SubscribeActivity extends AppCompatActivity {
 
@@ -44,8 +45,9 @@ public class SubscribeActivity extends AppCompatActivity {
         messageAdapter = new MessageViewAdapter(new ArrayList<Message>());
         messageView.setAdapter(messageAdapter);
         dbOpenHelper = new MessageDBOpenHelper(this);
-        if(!dbOpenHelper.getPreviousMessages().isEmpty()) {
-            for(Message message : dbOpenHelper.getPreviousMessages())  {
+        List<Message> previousMessages = dbOpenHelper.getPreviousMessages();
+        if(!previousMessages.isEmpty()) {
+            for(Message message : previousMessages)  {
                 messageAdapter.addMessage(message);
             }
         } else {
