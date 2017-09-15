@@ -15,6 +15,7 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 
+import org.jembi.rad.mqttdemo.database.MessageDBOpenHelper;
 import org.jembi.rad.mqttdemo.model.Message;
 import org.jembi.rad.mqttdemo.service.MessageService;
 
@@ -25,6 +26,7 @@ public class SubscribeActivity extends AppCompatActivity {
 
     private RecyclerView messageView;
     private MessageViewAdapter messageAdapter;
+    private MessageDBOpenHelper dbOpenHelper;
 
     private BroadcastReceiver alertReceiver = null;
     private BroadcastReceiver messageReceiver = null;
@@ -41,7 +43,14 @@ public class SubscribeActivity extends AppCompatActivity {
         messageView = (RecyclerView) findViewById(R.id.messages);
         messageAdapter = new MessageViewAdapter(new ArrayList<Message>());
         messageView.setAdapter(messageAdapter);
-        messageAdapter.addMessage(new Message(new Date(), "Welcome to the RAD MQTT Demo App"));
+        dbOpenHelper = new MessageDBOpenHelper(this);
+        if(!dbOpenHelper.getPreviousMessages().isEmpty()) {
+            for(Message message : dbOpenHelper.getPreviousMessages())  {
+                messageAdapter.addMessage(message);
+            }
+        } else {
+            messageAdapter.addMessage(new Message(new Date(), "Welcome to the RAD MQTT Demo App"));
+        }
 
         // set up broadcast receiver to receive notifications about new alerts
         alertReceiver = new BroadcastReceiver() {
@@ -107,6 +116,7 @@ public class SubscribeActivity extends AppCompatActivity {
     private void displayMessage(Message message) {
         Log.i("LOG", "MQTT message incoming: " + message.getMessage());
         messageAdapter.addMessage(message);
+        dbOpenHelper.insertMessage(message);
         messageView.smoothScrollToPosition(messageAdapter.getItemCount());
     }
 
