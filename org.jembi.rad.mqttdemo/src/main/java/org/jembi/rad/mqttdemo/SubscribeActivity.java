@@ -140,8 +140,8 @@ public class SubscribeActivity extends AppCompatActivity {
 
     private void displayAlert(String alert) {
         Log.i("LOG", "Alert received: " + alert);
-        //Snackbar.make(findViewById(android.R.id.content), alert, Snackbar.LENGTH_LONG)
-        //        .setAction("Action", null).show();
+        Snackbar.make(findViewById(android.R.id.content), alert, Snackbar.LENGTH_LONG)
+                .setAction("Action", null).show();
     }
 
     private void changeConnectionStatus(Boolean status) {
