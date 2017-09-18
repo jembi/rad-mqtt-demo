@@ -6,10 +6,12 @@ import android.app.Service;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
+import android.content.SharedPreferences.Editor;
 import android.net.Uri;
 import android.os.IBinder;
 import android.preference.PreferenceManager;
 import android.support.v4.app.NotificationCompat;
+import android.support.v4.app.NotificationCompat.Builder;
 import android.support.v4.content.LocalBroadcastManager;
 import android.text.TextUtils;
 import android.util.Log;
@@ -77,7 +79,7 @@ public class MessageService extends Service {
         if (clientId == null) {
             // set the clientId if it hasn't been set already (i.e. probably the first time using the application)
             clientId = UUID.randomUUID().toString();
-            SharedPreferences.Editor editor = preferences.edit();
+            Editor editor = preferences.edit();
             editor.putString(this.getString(R.string.client_id_label), clientId);
             editor.commit();
         }
@@ -208,7 +210,7 @@ public class MessageService extends Service {
                     mainActivityIntent, PendingIntent.FLAG_UPDATE_CURRENT);
 
             // Build the notification
-            NotificationCompat.Builder notificationBuilder = new NotificationCompat.Builder(context)
+            Builder notificationBuilder = new Builder(context)
                     .setSmallIcon(R.drawable.ic_message_green_24dp) // FIXME: this is not working
                     .setContentTitle(context.getString(R.string.alert_notification_title))
                     .setSubText(context.getString(R.string.alert_notification_subtitle, topic))
