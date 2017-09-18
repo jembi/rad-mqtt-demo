@@ -5,6 +5,7 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
 import android.os.Bundle;
+import android.support.annotation.Nullable;
 import android.support.design.widget.Snackbar;
 import android.support.v4.content.LocalBroadcastManager;
 import android.support.v7.app.AppCompatActivity;
@@ -32,6 +33,9 @@ public class SubscribeActivity extends AppCompatActivity {
     private BroadcastReceiver alertReceiver = null;
     private BroadcastReceiver messageReceiver = null;
     private BroadcastReceiver connectionReceiver = null;
+
+    private MenuItem offlineIcon;
+    private Boolean connected = null;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -96,6 +100,8 @@ public class SubscribeActivity extends AppCompatActivity {
     public boolean onCreateOptionsMenu(Menu menu) {
         // Inflate the menu; this adds items to the action bar if it is present.
         getMenuInflater().inflate(R.menu.menu_subscribe, menu);
+        offlineIcon = menu.findItem(R.id.offline_icon);
+        changeConnectionStatus(connected); // to ensure the latest status is displayed
         return true;
     }
 
@@ -124,19 +130,25 @@ public class SubscribeActivity extends AppCompatActivity {
 
     private void displayAlert(String alert) {
         Log.i("LOG", "Alert received: " + alert);
-        Snackbar.make(findViewById(android.R.id.content), alert, Snackbar.LENGTH_LONG)
-                .setAction("Action", null).show();
+        //Snackbar.make(findViewById(android.R.id.content), alert, Snackbar.LENGTH_LONG)
+        //        .setAction("Action", null).show();
     }
 
     private void changeConnectionStatus(Boolean status) {
         Log.i("LOG", "Connection status: " + status);
-        if (status == Boolean.TRUE) {
-            findViewById(R.id.offline_icon).setVisibility(View.INVISIBLE);
-        } else if (status == Boolean.FALSE) {
-            findViewById(R.id.offline_icon).setVisibility(View.VISIBLE);
-        } else {
-            // status is null
+        connected = status;
+        if (status == null) {
             Log.i("LOG", "Could not determine the current connection status");
+            return;
+        }
+        if (offlineIcon == null) {
+            Log.e("LOG", "offlineIcon has not yet been initialised!");
+            return;
+        }
+        if (status == Boolean.TRUE) {
+            offlineIcon.setVisible(false);
+        } else if (status == Boolean.FALSE) {
+            offlineIcon.setVisible(true);
         }
     }
 }

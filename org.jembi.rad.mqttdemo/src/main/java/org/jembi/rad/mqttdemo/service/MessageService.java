@@ -139,7 +139,7 @@ public class MessageService extends Service {
 
                 @Override
                 public void onFailure(IMqttToken asyncActionToken, Throwable exception) {
-                    Log.e(LOG_TAG, "Exception while connecting", exception);
+                    Log.e(LOG_TAG, "Failed to connect", exception);
                     displayAlert("Failed to connect to: " + serverUri);
                 }
             });
@@ -159,7 +159,8 @@ public class MessageService extends Service {
 
     @Override
     public int onStartCommand(Intent intent, int flags, int startId) {
-        Log.i(LOG_TAG, "Starting service to retrieve MQTT messages (does nothing)");
+        Log.i(LOG_TAG, "Checking status of service receiving MQTT messages");
+        updateBrokerConnectionStatus(mqttAndroidClient.isConnected());
         return START_STICKY;
     }
 
