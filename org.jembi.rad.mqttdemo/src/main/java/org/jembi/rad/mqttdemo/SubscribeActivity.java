@@ -82,6 +82,16 @@ public class SubscribeActivity extends AppCompatActivity {
             }
         };
 
+        // set up crash handler to log unhandled exceptions
+        // Note: in a production app, this should be a service like Crashalytics which will
+        // allow you to monitor exceptions thrown on client devices
+        Thread.setDefaultUncaughtExceptionHandler(new Thread.UncaughtExceptionHandler() {
+            @Override
+            public void uncaughtException(Thread thread, Throwable ex) {
+                Log.e("LOG", "App crashed!! Exception:", ex);
+            }
+        });
+
         // schedule message service
         Intent service = new Intent(getApplicationContext(), MessageService.class);
         getApplicationContext().startService(service);
