@@ -54,7 +54,7 @@ public class MessageDBOpenHelper extends SQLiteOpenHelper {
 
     public List<Message> getPreviousMessages() {
         try {
-            new GetPreviousMessagesTask().execute();
+            return new GetPreviousMessagesTask().execute().get();
         } catch (Exception e) {
             Log.e("LOG", "Could not retrieve older messages due to error " + e.getMessage());
         }
@@ -65,7 +65,8 @@ public class MessageDBOpenHelper extends SQLiteOpenHelper {
         new InsertMessageTask().execute(message);
     }
 
-    private class GetPreviousMessagesTask extends AsyncTask<Void, Void, Cursor> {
+    private class GetPreviousMessagesTask extends AsyncTask<Void, Void, List<Message>> {
+
 
         @Override
         protected void onPreExecute() {
@@ -76,7 +77,7 @@ public class MessageDBOpenHelper extends SQLiteOpenHelper {
         }
 
         @Override
-        protected Cursor doInBackground(Void... params) {
+        protected List<Message> doInBackground(Void... params) {
             String[] projection = {MessageEntry.COLUMN_NAME_DATE, MessageEntry.COLUMN_NAME_MESSAGE_TEXT};
             String selectionCriteria = MessageEntry.COLUMN_NAME_DATE + " <  ?";
             String[] selectionArgs = {String.valueOf(new Date().getTime())};
@@ -84,13 +85,7 @@ public class MessageDBOpenHelper extends SQLiteOpenHelper {
             Cursor cursor = database.query(MessageEntry.TABLE_NAME,
                     projection, selectionCriteria, selectionArgs, null, null, sortOrder);
 
-             return cursor;
-        }
-
-        @Override
-        protected void onPostExecute(Cursor cursor) {
-            super.onPostExecute(cursor);
-            readFromCursor(cursor);
+             return readFromCursor(cursor);
         }
 
         private List<Message> readFromCursor(Cursor cursor) {
