@@ -32,7 +32,6 @@ public class SubscribeActivity extends AppCompatActivity {
     private BroadcastReceiver alertReceiver = null;
     private BroadcastReceiver messageReceiver = null;
     private BroadcastReceiver connectionReceiver = null;
-    private MenuItem offlineIcon = null;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -97,8 +96,6 @@ public class SubscribeActivity extends AppCompatActivity {
     public boolean onCreateOptionsMenu(Menu menu) {
         // Inflate the menu; this adds items to the action bar if it is present.
         getMenuInflater().inflate(R.menu.menu_subscribe, menu);
-        offlineIcon = menu.findItem(R.id.offline_icon);
-        offlineIcon.setVisible(false);
         return true;
     }
 
@@ -134,9 +131,9 @@ public class SubscribeActivity extends AppCompatActivity {
     private void changeConnectionStatus(Boolean status) {
         Log.i("LOG", "Connection status: " + status);
         if (status == Boolean.TRUE) {
-            offlineIcon.setVisible(false);
+            findViewById(R.id.offline_icon).setVisibility(View.INVISIBLE);
         } else if (status == Boolean.FALSE) {
-            offlineIcon.setVisible(true);
+            findViewById(R.id.offline_icon).setVisibility(View.VISIBLE);
         } else {
             // status is null
             Log.i("LOG", "Could not determine the current connection status");
