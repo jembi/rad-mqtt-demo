@@ -211,7 +211,7 @@ public class MessageService extends Service {
 
             // Build the notification
             Builder notificationBuilder = new Builder(context)
-                    .setSmallIcon(R.drawable.ic_message_green_24dp) // FIXME: this is not working
+                    .setSmallIcon(R.drawable.ic_notifications_black_24dp)
                     .setContentTitle(context.getString(R.string.alert_notification_title))
                     .setSubText(context.getString(R.string.alert_notification_subtitle, topic))
                     .setTicker(context.getString(R.string.alert_notification_ticker))
