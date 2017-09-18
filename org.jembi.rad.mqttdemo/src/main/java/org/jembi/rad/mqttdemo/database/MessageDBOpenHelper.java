@@ -92,16 +92,17 @@ public class MessageDBOpenHelper extends SQLiteOpenHelper {
             super.onPostExecute(cursor);
             readFromCursor(cursor);
         }
+
+        private List<Message> readFromCursor(Cursor cursor) {
+            List<Message> messages = new ArrayList<>();
+            while (cursor.moveToNext()) {
+                Long date = cursor.getLong(cursor.getColumnIndexOrThrow(COLUMN_NAME_DATE));
+                String message = cursor.getString(cursor.getColumnIndexOrThrow(COLUMN_NAME_MESSAGE_TEXT));
+                messages.add(new Message(new Date(date), message));
+            }
+            return messages;
     }
 
-    private List<Message> readFromCursor(Cursor cursor) {
-        List<Message> messages = new ArrayList<>();
-        while (cursor.moveToNext()) {
-            Long date = cursor.getLong(cursor.getColumnIndexOrThrow(COLUMN_NAME_DATE));
-            String message = cursor.getString(cursor.getColumnIndexOrThrow(COLUMN_NAME_MESSAGE_TEXT));
-            messages.add(new Message(new Date(date), message));
-        }
-        return messages;
     }
 
     private class InsertMessageTask extends AsyncTask<Message, Integer, Void> {
@@ -126,6 +127,14 @@ public class MessageDBOpenHelper extends SQLiteOpenHelper {
             super.onPostExecute(aVoid);
             Log.i("LOG", "Message saved");
         }
+
+        private ContentValues createContentValues(Message message) {
+            ContentValues contentValues = new ContentValues();
+            contentValues.put(COLUMN_NAME_MESSAGE_TEXT, message.getMessage());
+            contentValues.put(COLUMN_NAME_DATE, message.getDatetime().getTime());
+            return contentValues;
+        }
+
     }
 
     private void openDBConnection() {
@@ -134,11 +143,5 @@ public class MessageDBOpenHelper extends SQLiteOpenHelper {
         }
     }
 
-    private ContentValues createContentValues(Message message) {
-        ContentValues contentValues = new ContentValues();
-        contentValues.put(COLUMN_NAME_MESSAGE_TEXT, message.getMessage());
-        contentValues.put(COLUMN_NAME_DATE, message.getDatetime().getTime());
-        return contentValues;
-    }
 
 }
