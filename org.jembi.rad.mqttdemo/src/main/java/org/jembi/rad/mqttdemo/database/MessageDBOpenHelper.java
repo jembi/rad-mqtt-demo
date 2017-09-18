@@ -33,7 +33,6 @@ public class MessageDBOpenHelper extends SQLiteOpenHelper {
 
     public MessageDBOpenHelper(Context context) {
         super(context, DATABASE_NAME, null, DATABASE_VERSION);
-        openDBConnection();
     }
 
 
@@ -92,7 +91,6 @@ public class MessageDBOpenHelper extends SQLiteOpenHelper {
         protected void onPostExecute(Cursor cursor) {
             super.onPostExecute(cursor);
             readFromCursor(cursor);
-            closeDBConnection();
         }
     }
 
@@ -127,19 +125,12 @@ public class MessageDBOpenHelper extends SQLiteOpenHelper {
         protected void onPostExecute(Void aVoid) {
             super.onPostExecute(aVoid);
             Log.i("LOG", "Message saved");
-            closeDBConnection();
         }
     }
 
     private void openDBConnection() {
         if(database == null) {
             database = this.getWritableDatabase();
-        }
-    }
-
-    private void closeDBConnection() {
-        if(database != null) {
-            database.close();
         }
     }
 
