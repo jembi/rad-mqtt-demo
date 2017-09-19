@@ -7,6 +7,8 @@ import android.util.Log;
 
 public class RadMQTTDemoApplication extends Application {
 
+    public static final String LOG_TAG = "MQTTDemo";
+
     private static RadMQTTDemoApplication instance;
     private static boolean appInForeground = false;
 
@@ -34,13 +36,13 @@ public class RadMQTTDemoApplication extends Application {
 
             @Override
             public void onActivityResumed(Activity activity) {
-                Log.i("LOG", "onActivityResumed");
+                Log.i(RadMQTTDemoApplication.LOG_TAG, "onActivityResumed");
                 appInForeground = true;
             }
 
             @Override
             public void onActivityPaused(Activity activity) {
-                Log.i("LOG", "onActivityPaused");
+                Log.i(RadMQTTDemoApplication.LOG_TAG, "onActivityPaused");
                 appInForeground = false;
             }
 
@@ -56,6 +58,6 @@ public class RadMQTTDemoApplication extends Application {
             public void onActivityDestroyed(Activity activity) {
             }
         });
-        Log.i("LOG", "Created RAD MQTT Demo Application");
+        Log.i(RadMQTTDemoApplication.LOG_TAG, "Created RAD MQTT Demo Application");
     }
 }

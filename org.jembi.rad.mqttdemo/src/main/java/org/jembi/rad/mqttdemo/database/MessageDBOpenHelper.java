@@ -8,6 +8,7 @@ import android.database.sqlite.SQLiteOpenHelper;
 import android.os.AsyncTask;
 import android.util.Log;
 
+import org.jembi.rad.mqttdemo.RadMQTTDemoApplication;
 import org.jembi.rad.mqttdemo.model.Message;
 
 import java.util.ArrayList;
@@ -56,7 +57,7 @@ public class MessageDBOpenHelper extends SQLiteOpenHelper {
         try {
             return new GetPreviousMessagesTask().execute().get();
         } catch (Exception e) {
-            Log.e("LOG", "Could not retrieve older messages due to error " + e.getMessage());
+            Log.e(RadMQTTDemoApplication.LOG_TAG, "Could not retrieve older messages due to error " + e.getMessage());
         }
         return new ArrayList<>();
     }
@@ -71,7 +72,7 @@ public class MessageDBOpenHelper extends SQLiteOpenHelper {
         @Override
         protected void onPreExecute() {
             super.onPreExecute();
-            Log.i("LOG", "Retrieving previous messages");
+            Log.i(RadMQTTDemoApplication.LOG_TAG, "Retrieving previous messages");
             openDBConnection();
 
         }
@@ -106,7 +107,7 @@ public class MessageDBOpenHelper extends SQLiteOpenHelper {
         protected void onPreExecute() {
             super.onPreExecute();
             openDBConnection();
-            Log.i("LOG", "Saving message");
+            Log.i(RadMQTTDemoApplication.LOG_TAG, "Saving message");
 
         }
 
@@ -120,7 +121,7 @@ public class MessageDBOpenHelper extends SQLiteOpenHelper {
         @Override
         protected void onPostExecute(Void aVoid) {
             super.onPostExecute(aVoid);
-            Log.i("LOG", "Message saved");
+            Log.i(RadMQTTDemoApplication.LOG_TAG, "Message saved");
         }
 
         private ContentValues createContentValues(Message message) {

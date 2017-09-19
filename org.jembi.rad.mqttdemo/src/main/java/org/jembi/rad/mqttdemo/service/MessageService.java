@@ -39,8 +39,6 @@ import java.util.UUID;
 
 public class MessageService extends Service {
 
-    public final static String LOG_TAG = "MQTTService";
-
     // App alert event constants
     public final static String EVENT_ALERT = "EVENT_ALERT";
     public final static String EVENT_ALERT_MESSAGE = "org.jembi.rad.mqttdemo.MESSAGE";
@@ -71,7 +69,7 @@ public class MessageService extends Service {
 
     @Override
     public void onCreate() {
-        Log.i(LOG_TAG, "Creating service to retrieve MQTT messages");
+        Log.i(RadMQTTDemoApplication.LOG_TAG, "Creating service to retrieve MQTT messages");
 
         // get connection details from preferences
         SharedPreferences preferences = PreferenceManager.getDefaultSharedPreferences(this);
@@ -127,7 +125,7 @@ public class MessageService extends Service {
 
 
         try {
-            Log.i(LOG_TAG, "Connecting to " + serverUri);
+            Log.i(RadMQTTDemoApplication.LOG_TAG, "Connecting to " + serverUri);
             IMqttToken token = mqttAndroidClient.connect(mqttConnectOptions, null, new IMqttActionListener() {
                 @Override
                 public void onSuccess(IMqttToken asyncActionToken) {
@@ -142,17 +140,17 @@ public class MessageService extends Service {
 
                 @Override
                 public void onFailure(IMqttToken asyncActionToken, Throwable exception) {
-                    Log.e(LOG_TAG, "Failed to connect", exception);
+                    Log.e(RadMQTTDemoApplication.LOG_TAG, "Failed to connect", exception);
                     displayAlert("Failed to connect to: " + serverUri);
                 }
             });
 
 
         } catch (MqttException ex) {
-            Log.e(LOG_TAG, "Exception while connecting", ex);
+            Log.e(RadMQTTDemoApplication.LOG_TAG, "Exception while connecting", ex);
         }
 
-        Log.i(LOG_TAG, "Finished creating service to retrieve MQTT messages");
+        Log.i(RadMQTTDemoApplication.LOG_TAG, "Finished creating service to retrieve MQTT messages");
     }
 
     @Override
@@ -162,14 +160,14 @@ public class MessageService extends Service {
 
     @Override
     public int onStartCommand(Intent intent, int flags, int startId) {
-        Log.i(LOG_TAG, "Checking status of service receiving MQTT messages");
+        Log.i(RadMQTTDemoApplication.LOG_TAG, "Checking status of service receiving MQTT messages");
         updateBrokerConnectionStatus(mqttAndroidClient.isConnected());
         return START_STICKY;
     }
 
     @Override
     public void onDestroy() {
-        Log.i(LOG_TAG, "I am dead to you ...");
+        Log.i(RadMQTTDemoApplication.LOG_TAG, "I am dead to you ...");
     }
 
     private void subscribeToTopic() {
@@ -196,12 +194,12 @@ public class MessageService extends Service {
             });
 
         } catch (MqttException ex){
-            Log.e(LOG_TAG, "Exception while subscribing", ex);
+            Log.e(RadMQTTDemoApplication.LOG_TAG, "Exception while subscribing", ex);
         }
     }
 
     private void receiveMessage(Message message) {
-        Log.i(LOG_TAG, "Received an MQTT message: " + message.getMessage());
+        Log.i(RadMQTTDemoApplication.LOG_TAG, "Received an MQTT message: " + message.getMessage());
 
         if (!RadMQTTDemoApplication.getInstance().isAppInForeground()) {
             // if the app is paused or running in the background, then display a notification
@@ -241,7 +239,7 @@ public class MessageService extends Service {
                 ((NotificationManager) context.getSystemService(Context.NOTIFICATION_SERVICE))
                         .notify(ALERT_NOTIFICATION_ID, notificationBuilder.build());
 
-                Log.i(LOG_TAG, "Created a system notification: " + notificationBuilder.toString());
+                Log.i(RadMQTTDemoApplication.LOG_TAG, "Created a system notification: " + notificationBuilder.toString());
             }
         }
 
@@ -250,7 +248,7 @@ public class MessageService extends Service {
     }
 
     private void displayAlert(String message) {
-        Log.i(LOG_TAG, "Alert: " + message);
+        Log.i(RadMQTTDemoApplication.LOG_TAG, "Alert: " + message);
         Intent it = new Intent(EVENT_ALERT);
         if (!TextUtils.isEmpty(message)) {
             it.putExtra(EVENT_ALERT_MESSAGE, message);
@@ -259,14 +257,14 @@ public class MessageService extends Service {
     }
 
     private void displayMessage(Message message) {
-        Log.i(LOG_TAG, "Message: " + message);
+        Log.i(RadMQTTDemoApplication.LOG_TAG, "Message: " + message);
         Intent it = new Intent(EVENT_MESSAGE);
         it.putExtra(EVENT_MESSAGE_CONTENT, message);
         LocalBroadcastManager.getInstance(this.getApplicationContext()).sendBroadcast(it);
     }
 
     private void updateBrokerConnectionStatus(Boolean status) {
-        Log.i(LOG_TAG, "Broker connection status: " + status);
+        Log.i(RadMQTTDemoApplication.LOG_TAG, "Broker connection status: " + status);
         Intent it = new Intent(EVENT_BROKER_CONNECTION);
         it.putExtra(EVENT_BROKER_CONNECTION_STATUS, status);
         LocalBroadcastManager.getInstance(this.getApplicationContext()).sendBroadcast(it);

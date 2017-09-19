@@ -88,7 +88,7 @@ public class SubscribeActivity extends AppCompatActivity {
         Thread.setDefaultUncaughtExceptionHandler(new Thread.UncaughtExceptionHandler() {
             @Override
             public void uncaughtException(Thread thread, Throwable ex) {
-                Log.e("LOG", "App crashed!! Exception:", ex);
+                Log.e(RadMQTTDemoApplication.LOG_TAG, "App crashed!! Exception:", ex);
             }
         });
 
@@ -132,27 +132,27 @@ public class SubscribeActivity extends AppCompatActivity {
     }
 
     private void displayMessage(Message message) {
-        Log.i("LOG", "MQTT message incoming: " + message.getMessage());
+        Log.i(RadMQTTDemoApplication.LOG_TAG, "MQTT message incoming: " + message.getMessage());
         messageAdapter.addMessage(message);
         dbOpenHelper.insertMessage(message);
         messageView.smoothScrollToPosition(messageAdapter.getItemCount());
     }
 
     private void displayAlert(String alert) {
-        Log.i("LOG", "Alert received: " + alert);
+        Log.i(RadMQTTDemoApplication.LOG_TAG, "Alert received: " + alert);
         Snackbar.make(findViewById(android.R.id.content), alert, Snackbar.LENGTH_LONG)
                 .setAction("Action", null).show();
     }
 
     private void changeConnectionStatus(Boolean status) {
-        Log.i("LOG", "Connection status: " + status);
+        Log.i(RadMQTTDemoApplication.LOG_TAG, "Connection status: " + status);
         connected = status;
         if (status == null) {
-            Log.i("LOG", "Could not determine the current connection status");
+            Log.i(RadMQTTDemoApplication.LOG_TAG, "Could not determine the current connection status");
             return;
         }
         if (offlineIcon == null) {
-            Log.e("LOG", "offlineIcon has not yet been initialised!");
+            Log.e(RadMQTTDemoApplication.LOG_TAG, "offlineIcon has not yet been initialised!");
             return;
         }
         if (status == Boolean.TRUE) {

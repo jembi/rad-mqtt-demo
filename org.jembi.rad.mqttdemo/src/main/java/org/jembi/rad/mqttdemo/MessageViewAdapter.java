@@ -31,7 +31,7 @@ public class MessageViewAdapter extends RecyclerView.Adapter<MessageViewAdapter.
     public void addMessage(Message message) {
         values.add(0, message);
         notifyItemInserted(0);
-        Log.i("LOG", "Incoming message: " + message.getMessage());
+        Log.i(RadMQTTDemoApplication.LOG_TAG, "Incoming message: " + message.getMessage());
     }
 
     @Override
@@ -43,7 +43,7 @@ public class MessageViewAdapter extends RecyclerView.Adapter<MessageViewAdapter.
 
     @Override
     public void onBindViewHolder(final ViewHolder holder, int position) {
-        Log.i("LOG", "onBind: " + position);
+        Log.i(RadMQTTDemoApplication.LOG_TAG, "onBind: " + position);
         holder.item = values.get(position);
         holder.dateTimeView.setText(DateFormat.getDateTimeInstance().format(holder.item.getDatetime()));
         holder.messageView.setText(holder.item.getMessage());
