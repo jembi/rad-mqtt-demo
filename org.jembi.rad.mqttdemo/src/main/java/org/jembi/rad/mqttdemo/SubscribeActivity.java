@@ -14,6 +14,7 @@ import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 
+import org.jembi.rad.mqttdemo.database.DatabaseResult;
 import org.jembi.rad.mqttdemo.database.MessageDBOpenHelper;
 import org.jembi.rad.mqttdemo.model.Message;
 import org.jembi.rad.mqttdemo.service.MessageService;
@@ -58,14 +59,25 @@ public class SubscribeActivity extends AppCompatActivity {
         messageAdapter = new MessageViewAdapter(new ArrayList<Message>());
         messageView.setAdapter(messageAdapter);
         dbOpenHelper = new MessageDBOpenHelper(this);
-        List<Message> previousMessages = dbOpenHelper.getPreviousMessages();
-        if(!previousMessages.isEmpty()) {
-            for(Message message : previousMessages)  {
-                messageAdapter.addMessage(message);
+
+        dbOpenHelper.getPreviousMessages(new DatabaseResult<List<Message>>() {
+            @Override
+            public void processResult(List<Message> messages) {
+                if (!messages.isEmpty()) {
+                    for (Message message : messages) {
+                        messageAdapter.addMessage(message);
+                    }
+                } else {
+                    messageAdapter.addMessage(new Message(new Date(), "Welcome to the RAD MQTT Demo App"));
+                }
             }
-        } else {
-            messageAdapter.addMessage(new Message(new Date(), "Welcome to the RAD MQTT Demo App"));
-        }
+
+            @Override
+            public void processException(Exception e) {
+                // for now, do nothing - it's already been logged
+
+            }
+        });
 
         // set up broadcast receiver to receive notifications about new alerts
         alertReceiver = new BroadcastReceiver() {

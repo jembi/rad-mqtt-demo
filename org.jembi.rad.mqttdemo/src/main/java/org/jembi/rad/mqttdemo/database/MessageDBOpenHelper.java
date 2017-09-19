@@ -31,6 +31,7 @@ public class MessageDBOpenHelper extends SQLiteOpenHelper {
     public static final int DATABASE_VERSION = 1;
     public static final String DATABASE_NAME = "Message.db";
     private SQLiteDatabase database;
+    private DatabaseResult<List<Message>> databaseResult;
 
     public MessageDBOpenHelper(Context context) {
         super(context, DATABASE_NAME, null, DATABASE_VERSION);
@@ -53,9 +54,9 @@ public class MessageDBOpenHelper extends SQLiteOpenHelper {
         onUpgrade(sqLiteDatabase, oldVersion, newVersion);
     }
 
-    public List<Message> getPreviousMessages() {
+    public List<Message> getPreviousMessages(DatabaseResult<List<Message>> databaseResult) {
         try {
-            return new GetPreviousMessagesTask().execute().get();
+             new GetPreviousMessagesTask(databaseResult).execute();
         } catch (Exception e) {
             Log.e(RadMQTTDemoApplication.LOG_TAG, "Could not retrieve older messages due to error " + e.getMessage());
         }
@@ -68,8 +69,12 @@ public class MessageDBOpenHelper extends SQLiteOpenHelper {
 
     private class GetPreviousMessagesTask extends AsyncTask<Void, Void, List<Message>> {
 
+        private DatabaseResult<List<Message>> callback;
 
-        @Override
+        public GetPreviousMessagesTask(DatabaseResult<List<Message>> callback) {
+            this.callback = callback;
+        }
+
         protected void onPreExecute() {
             super.onPreExecute();
             Log.i(RadMQTTDemoApplication.LOG_TAG, "Retrieving previous messages");
@@ -87,6 +92,12 @@ public class MessageDBOpenHelper extends SQLiteOpenHelper {
                     projection, selectionCriteria, selectionArgs, null, null, sortOrder);
 
              return readFromCursor(cursor);
+        }
+
+        @Override
+        protected void onPostExecute(List<Message> messages) {
+            super.onPostExecute(messages);
+            callback.processResult(messages);
         }
 
         private List<Message> readFromCursor(Cursor cursor) {
