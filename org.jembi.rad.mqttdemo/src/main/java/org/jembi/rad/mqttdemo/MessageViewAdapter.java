@@ -1,5 +1,6 @@
 package org.jembi.rad.mqttdemo;
 
+import android.support.v7.util.SortedList;
 import android.support.v7.widget.RecyclerView;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -18,20 +19,53 @@ import java.util.List;
  */
 public class MessageViewAdapter extends RecyclerView.Adapter<MessageViewAdapter.ViewHolder> {
 
-    private final List<Message> values;
+    private final SortedList<Message> values;
 
     public MessageViewAdapter(List<Message> items) {
-        if (items == null) {
-            // ensure the list is always initialised
-            items = new ArrayList<>();
-        }
-        values = items;
+        values = new SortedList<Message>(Message.class, new SortedList.Callback<Message>() {
+            @Override
+            public int compare(Message o1, Message o2) {
+                return o2.getDatetime().compareTo(o1.getDatetime());
+            }
+
+            @Override
+            public void onInserted(int position, int count) {
+                notifyItemRangeInserted(position, count);
+            }
+
+            @Override
+            public void onRemoved(int position, int count) {
+                notifyItemRangeRemoved(position, count);
+            }
+
+            @Override
+            public void onMoved(int fromPosition, int toPosition) {
+                notifyItemMoved(fromPosition, toPosition);
+            }
+
+            @Override
+            public void onChanged(int position, int count) {
+                notifyItemRangeChanged(position, count);
+            }
+
+            @Override
+            public boolean areContentsTheSame(Message oldItem, Message newItem) {
+                return oldItem.equals(newItem);
+            }
+
+            @Override
+            public boolean areItemsTheSame(Message item1, Message item2) {
+                return item1 == item2;
+            }
+        });
+        values.addAll(items);
     }
 
-    public void addMessage(Message message) {
-        values.add(0, message);
-        notifyItemInserted(0);
-        Log.i(RadMQTTDemoApplication.LOG_TAG, "Incoming message: " + message.getMessage());
+    public int addMessage(Message message) {
+        int index = values.add(message);
+        notifyItemInserted(index);
+        Log.i(RadMQTTDemoApplication.LOG_TAG, "Incoming message: " + message.getMessage() + " added at position " + index);
+        return index;
     }
 
     @Override
@@ -43,7 +77,6 @@ public class MessageViewAdapter extends RecyclerView.Adapter<MessageViewAdapter.
 
     @Override
     public void onBindViewHolder(final ViewHolder holder, int position) {
-        Log.i(RadMQTTDemoApplication.LOG_TAG, "onBind: " + position);
         holder.item = values.get(position);
         holder.dateTimeView.setText(DateFormat.getDateTimeInstance().format(holder.item.getDatetime()));
         holder.messageView.setText(holder.item.getMessage());

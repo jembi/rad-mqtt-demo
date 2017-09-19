@@ -133,9 +133,9 @@ public class SubscribeActivity extends AppCompatActivity {
 
     private void displayMessage(Message message) {
         Log.i(RadMQTTDemoApplication.LOG_TAG, "MQTT message incoming: " + message.getMessage());
-        messageAdapter.addMessage(message);
+        int index = messageAdapter.addMessage(message);
+        messageView.smoothScrollToPosition(index);
         dbOpenHelper.insertMessage(message);
-        messageView.smoothScrollToPosition(messageAdapter.getItemCount());
     }
 
     private void displayAlert(String alert) {

@@ -49,6 +49,25 @@ public class Message implements Parcelable {
     }
 
     @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+
+        Message message1 = (Message) o;
+
+        if (datetime != null ? !datetime.equals(message1.datetime) : message1.datetime != null)
+            return false;
+        return message != null ? message.equals(message1.message) : message1.message == null;
+    }
+
+    @Override
+    public int hashCode() {
+        int result = datetime != null ? datetime.hashCode() : 0;
+        result = 31 * result + (message != null ? message.hashCode() : 0);
+        return result;
+    }
+
+    @Override
     public String toString() {
         return "Message { " + "datetime=" + datetime + ", message='" + message + '\'' + " }";
     }
