@@ -1,5 +1,6 @@
 package org.jembi.rad.mqttdemo.service;
 
+import android.app.ActivityManager;
 import android.app.NotificationManager;
 import android.app.PendingIntent;
 import android.app.Service;
@@ -27,11 +28,13 @@ import org.eclipse.paho.client.mqttv3.MqttConnectOptions;
 import org.eclipse.paho.client.mqttv3.MqttException;
 import org.eclipse.paho.client.mqttv3.MqttMessage;
 import org.jembi.rad.mqttdemo.R;
+import org.jembi.rad.mqttdemo.RadMQTTDemoApplication;
 import org.jembi.rad.mqttdemo.SettingsActivity;
 import org.jembi.rad.mqttdemo.SubscribeActivity;
 import org.jembi.rad.mqttdemo.model.Message;
 
 import java.util.Date;
+import java.util.List;
 import java.util.UUID;
 
 public class MessageService extends Service {
@@ -200,50 +203,50 @@ public class MessageService extends Service {
     private void receiveMessage(Message message) {
         Log.i(LOG_TAG, "Received an MQTT message: " + message.getMessage());
 
-        Context context = this.getApplicationContext();
+        if (!RadMQTTDemoApplication.getInstance().isAppInForeground()) {
+            // if the app is paused or running in the background, then display a notification
+            Context context = this.getApplicationContext();
+            SharedPreferences preferences = PreferenceManager.getDefaultSharedPreferences(this);
+            boolean notificationEnabled = preferences.getBoolean(SettingsActivity.NOTIFICATION_NEW_MESSAGE_ENABLED, true);
+            if (notificationEnabled) {
+                // Define the Notification Intent
+                Intent mainActivityIntent = new Intent(context, SubscribeActivity.class);
+                PendingIntent mainActivityPendingIntent = PendingIntent.getActivity(context, 0,
+                        mainActivityIntent, PendingIntent.FLAG_UPDATE_CURRENT);
 
-        SharedPreferences preferences = PreferenceManager.getDefaultSharedPreferences(this);
-        boolean notificationEnabled = preferences.getBoolean(SettingsActivity.NOTIFICATION_NEW_MESSAGE_ENABLED, true);
-        if (notificationEnabled) {
-            // Define the Notification Intent
-            Intent mainActivityIntent = new Intent(context, SubscribeActivity.class);
-            PendingIntent mainActivityPendingIntent = PendingIntent.getActivity(context, 0,
-                    mainActivityIntent, PendingIntent.FLAG_UPDATE_CURRENT);
+                // Build the notification
+                Builder notificationBuilder = new Builder(context)
+                        .setSmallIcon(R.drawable.ic_notifications_black_24dp)
+                        .setContentTitle(context.getString(R.string.alert_notification_title))
+                        .setSubText(context.getString(R.string.alert_notification_subtitle, topic))
+                        .setTicker(context.getString(R.string.alert_notification_ticker))
+                        .setStyle(new NotificationCompat.BigTextStyle().bigText(message.getMessage()))
+                        .setNumber(1)
+                        .setContentIntent(mainActivityPendingIntent)
+                        .setAutoCancel(true);
 
-            // Build the notification
-            Builder notificationBuilder = new Builder(context)
-                    .setSmallIcon(R.drawable.ic_notifications_black_24dp)
-                    .setContentTitle(context.getString(R.string.alert_notification_title))
-                    .setSubText(context.getString(R.string.alert_notification_subtitle, topic))
-                    .setTicker(context.getString(R.string.alert_notification_ticker))
-                    .setStyle(new NotificationCompat.BigTextStyle().bigText(message.getMessage()))
-                    .setNumber(1)
-                    .setContentIntent(mainActivityPendingIntent)
-                    .setAutoCancel(true);
+                // set the ringtone
+                String ringtone = preferences.getString(SettingsActivity.NOTIFICATION_NEW_MESSAGE_RINGTONE, null);
+                if (ringtone != null) {
+                    notificationBuilder.setSound(Uri.parse(ringtone));
+                }
 
-            // set the ringtone
-            String ringtone = preferences.getString(SettingsActivity.NOTIFICATION_NEW_MESSAGE_RINGTONE, null);
-            if (ringtone != null) {
-                notificationBuilder.setSound(Uri.parse(ringtone));
+                // set the vibration
+                boolean vibrate = preferences.getBoolean(SettingsActivity.NOTIFICATION_NEW_MESSAGE_VIBRATE, true);
+                if (vibrate) {
+                    notificationBuilder.setVibrate(mVibratePattern);
+                }
+
+                // Pass the Notification to the NotificationManager:
+                ((NotificationManager) context.getSystemService(Context.NOTIFICATION_SERVICE))
+                        .notify(ALERT_NOTIFICATION_ID, notificationBuilder.build());
+
+                Log.i(LOG_TAG, "Created a system notification: " + notificationBuilder.toString());
             }
-
-            // set the vibration
-            boolean vibrate = preferences.getBoolean(SettingsActivity.NOTIFICATION_NEW_MESSAGE_VIBRATE, true);
-            if (vibrate) {
-                notificationBuilder.setVibrate(mVibratePattern);
-            }
-
-            // Pass the Notification to the NotificationManager:
-            ((NotificationManager) context.getSystemService(Context.NOTIFICATION_SERVICE))
-                    .notify(ALERT_NOTIFICATION_ID, notificationBuilder.build());
-
-            Log.i(LOG_TAG, "Created a system notification: " + notificationBuilder.toString());
         }
 
         // send the message to the SubscribeActivity to display to the user
         displayMessage(message);
-
-        // FIXME: add to the database
     }
 
     private void displayAlert(String message) {
