@@ -32,7 +32,6 @@ public class MessageViewAdapter extends RecyclerView.Adapter<MessageViewAdapter.
         values.add(0, message);
         notifyItemInserted(0);
         Log.i("LOG", "Incoming message: " + message.getMessage());
-        System.out.println("Message index" + values.get(0).getMessage());
     }
 
     @Override
