@@ -5,7 +5,6 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
 import android.os.Bundle;
-import android.support.annotation.Nullable;
 import android.support.design.widget.Snackbar;
 import android.support.v4.content.LocalBroadcastManager;
 import android.support.v7.app.AppCompatActivity;
@@ -14,7 +13,6 @@ import android.support.v7.widget.Toolbar;
 import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
-import android.view.View;
 
 import org.jembi.rad.mqttdemo.database.MessageDBOpenHelper;
 import org.jembi.rad.mqttdemo.model.Message;
@@ -24,16 +22,27 @@ import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
+/**
+ * SubscribeAcivity is the main activity in the RAD MQTT Demo App. It displays a list of MQTT messages
+ * that arrive on the configured MQTT topic.
+ *
+ * See layouts: activity_subscribe, content_messages and fragment_message
+ */
 public class SubscribeActivity extends AppCompatActivity {
 
+    // UI elements used to display messages
     private RecyclerView messageView;
     private MessageViewAdapter messageAdapter;
+
+    // Database connection
     private MessageDBOpenHelper dbOpenHelper;
 
+    // BroadcastReceivers for events sent from the MessageService
     private BroadcastReceiver alertReceiver = null;
     private BroadcastReceiver messageReceiver = null;
     private BroadcastReceiver connectionReceiver = null;
 
+    // Variables that manage the visibility of the offline icon
     private MenuItem offlineIcon;
     private Boolean connected = null;
 

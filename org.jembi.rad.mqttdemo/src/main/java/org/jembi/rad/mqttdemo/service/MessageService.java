@@ -1,6 +1,5 @@
 package org.jembi.rad.mqttdemo.service;
 
-import android.app.ActivityManager;
 import android.app.NotificationManager;
 import android.app.PendingIntent;
 import android.app.Service;
@@ -34,9 +33,24 @@ import org.jembi.rad.mqttdemo.SubscribeActivity;
 import org.jembi.rad.mqttdemo.model.Message;
 
 import java.util.Date;
-import java.util.List;
 import java.util.UUID;
 
+/**
+ * MessageService is used to handle the MQTT communications. It manages the MQTTClient and the subscription.
+ *
+ * When the connection is made with the MQTT broker (or lost) and the subscription to the topic is successful,
+ * an alert is sent via a LocalBroadcast, so that a popup can be displayed to the user. See the
+ * BroadcastReceiver code in SubscribeActivity.
+ *
+ * When a message arrives on the topic, if notifications have been enabled in the settings and the app
+ * is running in the background, a notification will be sent to the phone (with a customisable sound
+ * and optional vibration. A LocalBroadcast is also sent, with the message, so that it can
+ * be inserted into the message list and into the database. (See the BroadcastReceiver in SubscribeActivity.)
+ *
+ * FIXME: A future improvement to this Service would be to handle the exceptions that are thrown when
+ * the mqttAndroidClient is connected to the broker and when the topic subscription is created. If
+ * an exception is thrown at those two points, the messages will not work.
+ */
 public class MessageService extends Service {
 
     // App alert event constants

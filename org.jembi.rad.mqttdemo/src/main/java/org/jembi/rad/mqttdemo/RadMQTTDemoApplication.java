@@ -5,6 +5,9 @@ import android.app.Application;
 import android.os.Bundle;
 import android.util.Log;
 
+/**
+ *
+ */
 public class RadMQTTDemoApplication extends Application {
 
     public static final String LOG_TAG = "MQTTDemo";

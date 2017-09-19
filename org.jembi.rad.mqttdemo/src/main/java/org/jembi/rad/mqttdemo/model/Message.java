@@ -5,6 +5,9 @@ import android.os.Parcelable;
 
 import java.util.Date;
 
+/**
+ * Class that is used to persist and display a message that is received on the configured topic
+ */
 public class Message implements Parcelable {
 
     private Date datetime;
@@ -20,6 +23,11 @@ public class Message implements Parcelable {
         message = in.readString();
     }
 
+    /**
+     * The Creator is used to deserialise the Message from a Parcel, which is used
+     * when the Message is passed as an extra in an Intent that is send as a Broadcast
+     * from the MessageService to the SubscribeActivity.
+     */
     public static final Creator<Message> CREATOR = new Creator<Message>() {
         @Override
         public Message createFromParcel(Parcel in) {

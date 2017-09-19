@@ -15,7 +15,13 @@ import java.util.ArrayList;
 import java.util.List;
 
 /**
- * {@link RecyclerView.Adapter} that can display a {@link Message}
+ * MessageViewAdapter is used to manage the message data displayed in the Message RecyclerView (see SubscribeActivity).
+ * The messages are stored in a sorted list that orders messages by date/time received so the latest messages
+ * are at the top of the list.
+ *
+ * Messages can be added to the list when the arrive, using the method addMessage.
+ *
+ * See: {@link RecyclerView.Adapter}
  */
 public class MessageViewAdapter extends RecyclerView.Adapter<MessageViewAdapter.ViewHolder> {
 
@@ -25,6 +31,7 @@ public class MessageViewAdapter extends RecyclerView.Adapter<MessageViewAdapter.
         values = new SortedList<Message>(Message.class, new SortedList.Callback<Message>() {
             @Override
             public int compare(Message o1, Message o2) {
+                // handles the sort order of the list
                 return o2.getDatetime().compareTo(o1.getDatetime());
             }
 
@@ -58,9 +65,15 @@ public class MessageViewAdapter extends RecyclerView.Adapter<MessageViewAdapter.
                 return item1 == item2;
             }
         });
+        // adds all the specified items to the list
         values.addAll(items);
     }
 
+    /**
+     * Add a Message to the list displayed to the user
+     * @param message Message to add
+     * @return int index that the Message was added
+     */
     public int addMessage(Message message) {
         int index = values.add(message);
         notifyItemInserted(index);
@@ -70,6 +83,8 @@ public class MessageViewAdapter extends RecyclerView.Adapter<MessageViewAdapter.
 
     @Override
     public ViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
+        // This method is called to create a ViewHolder from the fragment XML.
+        // It is called before onBindViewHolder (see method below)
         View view = LayoutInflater.from(parent.getContext())
                 .inflate(R.layout.fragment_message, parent, false);
         return new ViewHolder(view);
@@ -77,6 +92,9 @@ public class MessageViewAdapter extends RecyclerView.Adapter<MessageViewAdapter.
 
     @Override
     public void onBindViewHolder(final ViewHolder holder, int position) {
+        // This method sets the datetime and message in the ViewHolder with the Message data from the
+        // specified index in the SortedList.
+        // If the user scrolls up and down a long list, ViewHolders are created and destroyed
         holder.item = values.get(position);
         holder.dateTimeView.setText(DateFormat.getDateTimeInstance().format(holder.item.getDatetime()));
         holder.messageView.setText(holder.item.getMessage());
@@ -87,6 +105,9 @@ public class MessageViewAdapter extends RecyclerView.Adapter<MessageViewAdapter.
         return values.size();
     }
 
+    /**
+     * ViewHolder contains Message data in a format that is displayed to the user
+     */
     public class ViewHolder extends RecyclerView.ViewHolder {
         public final View view;
         public final TextView dateTimeView;
