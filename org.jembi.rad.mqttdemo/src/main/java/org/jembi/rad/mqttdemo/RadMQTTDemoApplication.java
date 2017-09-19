@@ -6,7 +6,16 @@ import android.os.Bundle;
 import android.util.Log;
 
 /**
+ * Android Application class for the app. It is the the base class and contains references to all other
+ * components (e.g. activities or services). It is instantiated before any other class when the process
+ * is created.
  *
+ * It is not required and should be used very carefully, it is primarily used for initialization of
+ * global state before the first Activity is displayed.
+ *
+ * This Application implementation is used to implement the Activity Lifecycle callbacks to monitor
+ * if the app is being used. This is useful to know whether or not to send status notifications when
+ * a message arrives.
  */
 public class RadMQTTDemoApplication extends Application {
 
@@ -15,10 +24,18 @@ public class RadMQTTDemoApplication extends Application {
     private static RadMQTTDemoApplication instance;
     private static boolean appInForeground = false;
 
+    /**
+     * Provides a handle on the Application singleton
+     * @return RadMQTTDemoApplication
+     */
     public static RadMQTTDemoApplication getInstance() {
         return instance;
     }
 
+    /**
+     * Indicates if the app is currently being displayed to the user (or being used by the user).
+     * @return true if the app is in the foreground, on top of all other apps
+     */
     public boolean isAppInForeground() {
         return appInForeground;
     }
