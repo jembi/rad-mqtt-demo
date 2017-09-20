@@ -23,9 +23,10 @@ import static org.jembi.rad.mqttdemo.database.MessageDBContract.MessageEntry.SQL
 import static org.jembi.rad.mqttdemo.database.MessageDBContract.MessageEntry.TABLE_NAME;
 
 /**
- * Created by Jembi Health Systems on 2017/09/13.
+ * Class that handles the Message Database interaction. It is used to manage creating, upgrading,
+ * downgrading of the database. Also opening of the database connection, and running specific operations
+ * to insert and query data.
  */
-
 public class MessageDBOpenHelper extends SQLiteOpenHelper {
 
     public static final int DATABASE_VERSION = 1;
@@ -54,6 +55,10 @@ public class MessageDBOpenHelper extends SQLiteOpenHelper {
         onUpgrade(sqLiteDatabase, oldVersion, newVersion);
     }
 
+    /**
+     * Retrieves the messages stored in the database asynchronously
+     * @param databaseResult DatabaseResult, a callback for the List of Messages that is returned
+     */
     public List<Message> getPreviousMessages(DatabaseResult<List<Message>> databaseResult) {
         try {
              new GetPreviousMessagesTask(databaseResult).execute();
@@ -63,10 +68,17 @@ public class MessageDBOpenHelper extends SQLiteOpenHelper {
         return new ArrayList<>();
     }
 
+    /**
+     * Adds a new message to the database
+     * @param message Message to insert
+     */
     public void insertMessage(Message message) {
         new InsertMessageTask().execute(message);
     }
 
+    /**
+     * Class that handles the asynchronous task to query messages from the database
+     */
     private class GetPreviousMessagesTask extends AsyncTask<Void, Void, List<Message>> {
 
         private DatabaseResult<List<Message>> callback;
@@ -108,10 +120,12 @@ public class MessageDBOpenHelper extends SQLiteOpenHelper {
                 messages.add(new Message(new Date(date), message));
             }
             return messages;
+        }
     }
 
-    }
-
+    /**
+     * Class that handles the asynchronous task to insert message
+     */
     private class InsertMessageTask extends AsyncTask<Message, Integer, Void> {
 
         @Override
@@ -149,6 +163,4 @@ public class MessageDBOpenHelper extends SQLiteOpenHelper {
             database = this.getWritableDatabase();
         }
     }
-
-
 }

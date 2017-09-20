@@ -3,9 +3,8 @@ package org.jembi.rad.mqttdemo.database;
 import android.provider.BaseColumns;
 
 /**
- * Created by Jembi Health Systems on 2017/09/13.
+ * Defines the Message Database structure and SQL statements to create and drop the table
  */
-
 public final class MessageDBContract {
 
     public MessageDBContract() {
