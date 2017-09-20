@@ -1,4 +1,4 @@
-package org.jembi.rad.mqttdemo;
+package org.jembi.rad.mqttdemo.ui;
 
 
 import android.annotation.TargetApi;
@@ -19,6 +19,8 @@ import android.preference.PreferenceManager;
 import android.preference.RingtonePreference;
 import android.text.TextUtils;
 import android.view.MenuItem;
+
+import org.jembi.rad.mqttdemo.R;
 
 import java.util.List;
 

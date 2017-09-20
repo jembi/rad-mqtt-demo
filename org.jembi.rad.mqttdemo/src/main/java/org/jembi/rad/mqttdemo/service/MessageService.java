@@ -28,8 +28,8 @@ import org.eclipse.paho.client.mqttv3.MqttException;
 import org.eclipse.paho.client.mqttv3.MqttMessage;
 import org.jembi.rad.mqttdemo.R;
 import org.jembi.rad.mqttdemo.RadMQTTDemoApplication;
-import org.jembi.rad.mqttdemo.SettingsActivity;
-import org.jembi.rad.mqttdemo.SubscribeActivity;
+import org.jembi.rad.mqttdemo.ui.SettingsActivity;
+import org.jembi.rad.mqttdemo.ui.SubscribeActivity;
 import org.jembi.rad.mqttdemo.model.Message;
 
 import java.util.Date;

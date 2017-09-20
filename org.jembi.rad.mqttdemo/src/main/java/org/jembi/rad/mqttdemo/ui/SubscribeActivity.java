@@ -1,4 +1,4 @@
-package org.jembi.rad.mqttdemo;
+package org.jembi.rad.mqttdemo.ui;
 
 import android.content.BroadcastReceiver;
 import android.content.Context;
@@ -14,6 +14,8 @@ import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 
+import org.jembi.rad.mqttdemo.R;
+import org.jembi.rad.mqttdemo.RadMQTTDemoApplication;
 import org.jembi.rad.mqttdemo.database.DatabaseResult;
 import org.jembi.rad.mqttdemo.database.MessageDBOpenHelper;
 import org.jembi.rad.mqttdemo.model.Message;

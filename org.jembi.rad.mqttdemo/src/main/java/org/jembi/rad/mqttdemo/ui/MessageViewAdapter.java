@@ -1,4 +1,4 @@
-package org.jembi.rad.mqttdemo;
+package org.jembi.rad.mqttdemo.ui;
 
 import android.support.v7.util.SortedList;
 import android.support.v7.widget.RecyclerView;
@@ -8,10 +8,11 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
 
+import org.jembi.rad.mqttdemo.R;
+import org.jembi.rad.mqttdemo.RadMQTTDemoApplication;
 import org.jembi.rad.mqttdemo.model.Message;
 
 import java.text.DateFormat;
-import java.util.ArrayList;
 import java.util.List;
 
 /**
