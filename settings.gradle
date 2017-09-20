@@ -1,1 +1,2 @@
 include ':org.jembi.rad.mqttdemo'
+project(':org.jembi.rad.mqttdemo').projectDir = new File('org.jembi.rad.mqttdemo')

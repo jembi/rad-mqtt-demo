@@ -16,5 +16,9 @@ android:
 
 script:
   - ./gradlew clean
-  - ./gradlew org.eclipse.paho.android.sample:assemble paho.mqtt.android.example:assemble
-#  - ./gradlew org.eclipse.paho.android.service:assemble org.eclipse.paho.android.service:connectedCheck
+  - ./gradlew org.jembi.rad.mqttdemo:assemble
+
+notifications:
+  email:
+    on_success: change
+    on_failure: always
