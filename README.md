@@ -59,7 +59,7 @@ In Android Studio, a "Configuration" should have been created automatically for 
 To run the app, you can press the green "play"  button on the toolbar, use Shift-F10, or select 
 Run -> Run  "org.jembi.rad.mqttdemo".
 
-It's quickest to run the app on an actual device rather than an emulator, but either should work.
+It's quickest to run the app on an actual device rather than an [emulator](https://developer.android.com/studio/run/emulator.html), but either should work.
 
 #### Running on a device
 
