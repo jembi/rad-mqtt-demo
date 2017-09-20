@@ -91,14 +91,24 @@ public class MessageDBOpenHelper extends SQLiteOpenHelper {
 
         @Override
         protected List<Message> doInBackground(Void... params) {
-            String[] projection = {MessageEntry.COLUMN_NAME_DATE, MessageEntry.COLUMN_NAME_MESSAGE_TEXT};
-            String selectionCriteria = MessageEntry.COLUMN_NAME_DATE + " <  ?";
-            String[] selectionArgs = {String.valueOf(new Date().getTime())};
-            String sortOrder = MessageEntry.COLUMN_NAME_DATE + " DESC";
-            Cursor cursor = database.query(MessageEntry.TABLE_NAME,
-                    projection, selectionCriteria, selectionArgs, null, null, sortOrder);
-
-             return readFromCursor(cursor);
+            List<Message> messages = new ArrayList<>();
+            Cursor cursor = null;
+            try {
+                String[] projection = {MessageEntry.COLUMN_NAME_DATE, MessageEntry.COLUMN_NAME_MESSAGE_TEXT};
+                String selectionCriteria = MessageEntry.COLUMN_NAME_DATE + " <  ?";
+                String[] selectionArgs = {String.valueOf(new Date().getTime())};
+                String sortOrder = MessageEntry.COLUMN_NAME_DATE + " DESC";
+                cursor = database.query(MessageEntry.TABLE_NAME,
+                        projection, selectionCriteria, selectionArgs, null, null, sortOrder);
+                messages = readFromCursor(cursor);
+            } catch (Exception e) {
+                callback.processException(e);
+            } finally {
+                if (cursor != null) {
+                    cursor.close();
+                }
+            }
+            return messages;
         }
 
         @Override
@@ -107,14 +117,13 @@ public class MessageDBOpenHelper extends SQLiteOpenHelper {
             callback.processResult(messages);
         }
 
-        private List<Message> readFromCursor(Cursor cursor) {
+        private List<Message> readFromCursor(Cursor cursor) throws IllegalArgumentException {
             List<Message> messages = new ArrayList<>();
             while (cursor.moveToNext()) {
                 Long date = cursor.getLong(cursor.getColumnIndexOrThrow(COLUMN_NAME_DATE));
                 String message = cursor.getString(cursor.getColumnIndexOrThrow(COLUMN_NAME_MESSAGE_TEXT));
                 messages.add(new Message(new Date(date), message));
             }
-            cursor.close();
             return messages;
         }
     }
