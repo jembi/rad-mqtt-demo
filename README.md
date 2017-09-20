@@ -13,8 +13,9 @@ See documentation on [Messaging Protocols](https://docs.google.com/document/d/1A
 ## Demo app
 
 This demo application was adapted from the [Paho Android Service Example app](https://github.com/eclipse/paho.mqtt.android).
-The [Paho MQTT Android Service](https://github.com/eclipse/paho.mqtt.android) is an MQTT client library written in Java for
-developing applications on Android.
+It is an MQTT client library written in Java for developing applications on Android. This app uses the
+Paho Android Service which provides a library for implementing MQTT.
+
 
 The demo app is a simple MQTT subscriber that receives messages on a configurable MQTT topic.
 
