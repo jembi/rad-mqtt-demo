@@ -76,8 +76,8 @@ public class SubscribeActivity extends AppCompatActivity {
 
             @Override
             public void processException(Exception e) {
-                // for now, do nothing - it's already been logged
-
+                Snackbar.make(findViewById(android.R.id.content), "An error occurred while retrieving previous messages" , Snackbar.LENGTH_LONG);
+                Log.e(RadMQTTDemoApplication.LOG_TAG, "App crashed!! Exception:", e);
             }
         });
 

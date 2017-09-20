@@ -59,13 +59,8 @@ public class MessageDBOpenHelper extends SQLiteOpenHelper {
      * Retrieves the messages stored in the database asynchronously
      * @param databaseResult DatabaseResult, a callback for the List of Messages that is returned
      */
-    public List<Message> getPreviousMessages(DatabaseResult<List<Message>> databaseResult) {
-        try {
-             new GetPreviousMessagesTask(databaseResult).execute();
-        } catch (Exception e) {
-            Log.e(RadMQTTDemoApplication.LOG_TAG, "Could not retrieve older messages due to error " + e.getMessage());
-        }
-        return new ArrayList<>();
+    public void getPreviousMessages(DatabaseResult<List<Message>> databaseResult) {
+            new GetPreviousMessagesTask(databaseResult).execute();
     }
 
     /**
@@ -119,6 +114,7 @@ public class MessageDBOpenHelper extends SQLiteOpenHelper {
                 String message = cursor.getString(cursor.getColumnIndexOrThrow(COLUMN_NAME_MESSAGE_TEXT));
                 messages.add(new Message(new Date(date), message));
             }
+            cursor.close();
             return messages;
         }
     }
