@@ -92,15 +92,29 @@ The app is able to run in the background, so it can receive messages even if the
 
 #### Publishing MQTT messages
 
-Using an MQTT app like [MQTT.fx](http://www.mqttfx.org/), publish a message to the topic 
-"org/jembi/rad/mqttdemo".
+Using an MQTT application like [MQTT.fx](http://www.mqttfx.org/), publish a message to the topic 
+"org/jembi/rad/mqttdemo" using the Eclipse IOT broker (iot.eclipse.org).
 
 The message should be delivered to all apps running the demo app. If the app is currently open on
 the device, a message will just be added to the top of the message list. If the app is not currently
 running, or is in the background, a message notification will be created.
+
+Note: If the app MQTT settings have been changed (i.e. the broker or topic), then use the same
+topic and broker in your MQTT application.
+
+See the [MQTT.fx script](org.jembi.rad.mqttdemo/src/test/resources/02__RAD_Test.js) which can be used
+to automate a test with the app. 
+
+1. Copy this script into ~/MQTT-FX/scripts
+2. Restart the MQTT.fx application
+3. Connect to the Eclipse IOT broker (iot.eclipse.org)
+4. Go to the Scripts tab
+5. Select "RAD Test" from the drop down
+6. Click Execute
  
 ### Troubleshooting 
 
 Things to note:
 1. If the MQTT settings are changed, the app will need to be restarted for these to take effect.
 2. The client id must be unique otherwise the clients will be disconnected.
+3. The publisher must use the same broker and topic as the client.
