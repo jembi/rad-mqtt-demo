@@ -12,15 +12,13 @@ public class Message implements Parcelable {
 
     private Date datetime;
     private String message;
+    private int qos;
+    private boolean isRetained;
+    private boolean isDuplicate;
 
     public Message(Date datetime, String message) {
         this.datetime = datetime;
         this.message = message;
-    }
-
-    protected Message(Parcel in) {
-        datetime = new Date(in.readLong());
-        message = in.readString();
     }
 
     /**
@@ -40,6 +38,14 @@ public class Message implements Parcelable {
         }
     };
 
+    public Message(Date datetime, int qos, boolean isRetained, boolean isDuplicate, String message) {
+        this.datetime = datetime;
+        this.qos = qos;
+        this.isDuplicate = isDuplicate;
+        this.isRetained = isRetained;
+        this.message = message;
+    }
+
     public Date getDatetime() {
         return datetime;
     }
@@ -55,6 +61,36 @@ public class Message implements Parcelable {
     public void setMessage(String message) {
         this.message = message;
     }
+
+    public int getQos() {
+        return qos;
+    }
+
+    public void setQos(int qos) {
+        this.qos = qos;
+    }
+
+    public boolean isRetained() {
+        return isRetained;
+    }
+
+    public void setRetained(boolean retained) {
+        isRetained = retained;
+    }
+
+    public boolean isDuplicate() {
+        return isDuplicate;
+    }
+
+    public void setDuplicate(boolean duplicate) {
+        isDuplicate = duplicate;
+    }
+
+    protected Message(Parcel in) {
+        datetime = new Date(in.readLong());
+        message = in.readString();
+    }
+
 
     @Override
     public boolean equals(Object o) {
