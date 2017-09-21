@@ -77,7 +77,6 @@ public class MessageViewAdapter extends RecyclerView.Adapter<MessageViewAdapter.
      */
     public int addMessage(Message message) {
         int index = values.add(message);
-        notifyItemInserted(index);
         Log.i(RadMQTTDemoApplication.LOG_TAG, "Incoming message: " + message.getMessage() + " added at position " + index);
         return index;
     }
