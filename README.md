@@ -93,7 +93,7 @@ The app is able to run in the background, so it can receive messages even if the
 #### Publishing MQTT messages
 
 Using an MQTT app like [MQTT.fx](http://www.mqttfx.org/), publish a message to the topic 
-"RAD Demo Topic".
+"org/jembi/rad/mqttdemo".
 
 The message should be delivered to all apps running the demo app. If the app is currently open on
 the device, a message will just be added to the top of the message list. If the app is not currently
