@@ -203,7 +203,7 @@ public class MessageService extends Service {
                 public void messageArrived(String topic, MqttMessage message) throws Exception {
                     // message Arrived!
                     String messageContent = new String(message.getPayload());
-                    receiveMessage(new Message(new Date(), message.getQos(), message.isRetained(), message.isDuplicate(), messageContent));
+                    receiveMessage(new Message(new Date(), messageContent));
                 }
             });
 
@@ -258,9 +258,7 @@ public class MessageService extends Service {
         }
 
         // send the message to the SubscribeActivity to display to the user
-        if(!(qos == message.getQos() && message.isDuplicate()) || !(qos == message.getQos() && message.isRetained())) {
-            displayMessage(message);
-        }
+        displayMessage(message);
     }
 
     private void displayAlert(String message) {

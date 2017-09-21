@@ -101,7 +101,7 @@ public class SubscribeActivity extends AppCompatActivity {
         messageReceiver = new BroadcastReceiver() {
             @Override
             public void onReceive(Context context, Intent intent) {
-                    displayMessage((Message) intent.getParcelableExtra(MessageService.EVENT_MESSAGE_CONTENT));
+                displayMessage((Message)intent.getParcelableExtra(MessageService.EVENT_MESSAGE_CONTENT));
             }
         };
 
@@ -159,9 +159,6 @@ public class SubscribeActivity extends AppCompatActivity {
         int index = messageAdapter.addMessage(message);
         messageView.smoothScrollToPosition(index);
         dbOpenHelper.insertMessage(message);
-        messageView.getRecycledViewPool().clear();
-        messageAdapter.notifyDataSetChanged();
-
     }
 
     private void displayAlert(String alert) {
