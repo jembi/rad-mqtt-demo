@@ -68,10 +68,18 @@ It's quickest to run the app on an actual device rather than an [emulator](https
   * go to Settings > More > About and tap "Build number" 7 times
   * go to Settings > More > Developer Options and enable "USB debugging"
   * See more: [Configure On-Device Developer Options](https://developer.android.com/studio/debug/dev-options.html)
-3. Press Shift-F10 (or run using the green play button)
-4. Select your device from the list in the popup. If your device is not listed, ensure that it is 
+3. Press Shift-F10 (or run using the green play button on the toolbar)
+4. Select your device from the list in the popup (under Connected Devices). If your device is not listed, ensure that it is 
 properly connected and that USB debugging has been enabled (a popup is sometimes displayed on the device).
 
+#### Running on an emulator
+
+1. Go to Tools -> Android -> AVD Manager
+2. Click the "Create Virtual Device" button
+3. Choose your target device and target Android version (this will probably require you to download an image)
+4. Finish the create AVD wizard
+5. Press Shift-F10 (or run using the green play button on the toolbar)
+6. Select your AVD from the list of Available Virtual Devices and click OK
 
 #### Using the app
 
