@@ -70,14 +70,14 @@ public class SubscribeActivity extends AppCompatActivity {
                         messageAdapter.addMessage(message);
                     }
                 } else {
-                    messageAdapter.addMessage(new Message(new Date(), "Welcome to the RAD MQTT Demo App"));
+                    displayMessage(new Message(new Date(), "Welcome to the RAD MQTT Demo App"));
                 }
             }
 
             @Override
             public void processException(Exception e) {
                 Snackbar.make(findViewById(android.R.id.content), "An error occurred while retrieving previous messages" , Snackbar.LENGTH_LONG);
-                Log.e(RadMQTTDemoApplication.LOG_TAG, "App crashed!! Exception:", e);
+                Log.e(RadMQTTDemoApplication.LOG_TAG, "An error occurred while retrieving previous messages. Exception:", e);
             }
         });
 
