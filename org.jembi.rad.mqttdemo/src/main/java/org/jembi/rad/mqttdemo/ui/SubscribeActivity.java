@@ -154,11 +154,25 @@ public class SubscribeActivity extends AppCompatActivity {
         return super.onOptionsItemSelected(item);
     }
 
-    private void displayMessage(Message message) {
+    private void displayMessage(final Message message) {
         Log.i(RadMQTTDemoApplication.LOG_TAG, "MQTT message incoming: " + message.getMessage());
-        int index = messageAdapter.addMessage(message);
-        messageView.smoothScrollToPosition(index);
-        dbOpenHelper.insertMessage(message);
+        dbOpenHelper.insertMessage(new DatabaseResult<Boolean>() {
+            @Override
+            public void processResult(Boolean result) {
+                if(result) {
+                    int index = messageAdapter.addMessage(message);
+                    messageView.smoothScrollToPosition(index);
+                }
+
+            }
+
+            @Override
+            public void processException(Exception e) {
+                Snackbar.make(findViewById(android.R.id.content), "An error occurred while saving message" , Snackbar.LENGTH_LONG);
+                Log.e(RadMQTTDemoApplication.LOG_TAG, "An error occurred while retrieving previous messages. Exception:", e);
+
+            }
+        }, message);
     }
 
     private void displayAlert(String alert) {

@@ -67,8 +67,8 @@ public class MessageDBOpenHelper extends SQLiteOpenHelper {
      * Adds a new message to the database
      * @param message Message to insert
      */
-    public void insertMessage(Message message) {
-        new InsertMessageTask().execute(message);
+    public void insertMessage(DatabaseResult<Boolean> databaseResult, Message message) {
+        new InsertMessageTask(databaseResult).execute(message);
     }
 
     /**
@@ -97,10 +97,9 @@ public class MessageDBOpenHelper extends SQLiteOpenHelper {
                 String[] projection = {MessageEntry.COLUMN_NAME_DATE, MessageEntry.COLUMN_NAME_MESSAGE_TEXT};
                 String selectionCriteria = MessageEntry.COLUMN_NAME_DATE + " <  ?";
                 String[] selectionArgs = {String.valueOf(new Date().getTime())};
-                String groupBy = MessageEntry.COLUMN_NAME_MESSAGE_TEXT;
 
                 cursor = database.query( MessageEntry.TABLE_NAME,
-                        projection, selectionCriteria, selectionArgs, groupBy, null, null);
+                        projection, selectionCriteria, selectionArgs, null, null, null);
                 messages = readFromCursor(cursor);
             } catch (Exception e) {
                 callback.processException(e);
@@ -132,7 +131,14 @@ public class MessageDBOpenHelper extends SQLiteOpenHelper {
     /**
      * Class that handles the asynchronous task to insert message
      */
-    private class InsertMessageTask extends AsyncTask<Message, Integer, Void> {
+    private class InsertMessageTask extends AsyncTask<Message, Integer, Boolean> {
+
+        private DatabaseResult<Boolean> callback;
+
+
+        public InsertMessageTask(DatabaseResult<Boolean> callback) {
+            this.callback = callback;
+        }
 
         @Override
         protected void onPreExecute() {
@@ -149,7 +155,7 @@ public class MessageDBOpenHelper extends SQLiteOpenHelper {
          * @return
          */
         @Override
-        protected Void doInBackground(Message... messages) {
+        protected Boolean doInBackground(Message... messages) {
             Cursor cursor = null;
             try {
                 ContentValues contentValues = createContentValues(messages[0]);
@@ -160,22 +166,24 @@ public class MessageDBOpenHelper extends SQLiteOpenHelper {
                 cursor = database.rawQuery(sql, null);
                 if (cursor.getCount() <= 0) {
                     database.insert(TABLE_NAME, null, contentValues);
+                    return true;
                 }
             } catch (Exception ex) {
-                Log.e(RadMQTTDemoApplication.LOG_TAG, "Could not perform insert message due to error: " + ex.getStackTrace());
+                callback.processException(ex);
+                return false;
             } finally {
                 if(cursor != null) {
                     cursor.close();
                 }
             }
 
-            return null;
+            return false;
         }
 
         @Override
-        protected void onPostExecute(Void aVoid) {
-            super.onPostExecute(aVoid);
-            Log.i(RadMQTTDemoApplication.LOG_TAG, "Message saved");
+        protected void onPostExecute(Boolean aBoolean) {
+            super.onPostExecute(aBoolean);
+            callback.processResult(aBoolean);
         }
 
         private ContentValues createContentValues(Message message) {
