@@ -97,9 +97,10 @@ public class MessageDBOpenHelper extends SQLiteOpenHelper {
                 String[] projection = {MessageEntry.COLUMN_NAME_DATE, MessageEntry.COLUMN_NAME_MESSAGE_TEXT};
                 String selectionCriteria = MessageEntry.COLUMN_NAME_DATE + " <  ?";
                 String[] selectionArgs = {String.valueOf(new Date().getTime())};
-                String sortOrder = MessageEntry.COLUMN_NAME_DATE + " DESC";
-                cursor = database.query(MessageEntry.TABLE_NAME,
-                        projection, selectionCriteria, selectionArgs, null, null, sortOrder);
+                String groupBy = MessageEntry.COLUMN_NAME_MESSAGE_TEXT;
+
+                cursor = database.query( MessageEntry.TABLE_NAME,
+                        projection, selectionCriteria, selectionArgs, groupBy, null, null);
                 messages = readFromCursor(cursor);
             } catch (Exception e) {
                 callback.processException(e);
@@ -141,10 +142,33 @@ public class MessageDBOpenHelper extends SQLiteOpenHelper {
 
         }
 
+        /**
+         *
+         * Checks that the received message is not a duplicate of
+         * the last received message before saving
+         * @return
+         */
         @Override
         protected Void doInBackground(Message... messages) {
-            ContentValues contentValues = createContentValues(messages[0]);
-            database.insert(TABLE_NAME, null, contentValues);
+            Cursor cursor = null;
+            try {
+                ContentValues contentValues = createContentValues(messages[0]);
+                String sql = "SELECT " + MessageEntry.COLUMN_NAME_MESSAGE_TEXT + " FROM " + MessageEntry.TABLE_NAME +
+                        " WHERE " + MessageEntry._ID + " = (SELECT MAX(_id) FROM " + MessageEntry.TABLE_NAME + ")" +
+                        " AND " + MessageEntry.COLUMN_NAME_MESSAGE_TEXT + " LIKE \"%" + messages[0].getMessage() + "%\"";
+                
+                cursor = database.rawQuery(sql, null);
+                if (cursor.getCount() <= 0) {
+                    database.insert(TABLE_NAME, null, contentValues);
+                }
+            } catch (Exception ex) {
+                Log.e(RadMQTTDemoApplication.LOG_TAG, "Could not perform insert message due to error: " + ex.getStackTrace());
+            } finally {
+                if(cursor != null) {
+                    cursor.close();
+                }
+            }
+
             return null;
         }
 
