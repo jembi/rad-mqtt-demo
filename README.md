@@ -118,3 +118,6 @@ Things to note:
 1. If the MQTT settings are changed, the app will need to be restarted for these to take effect.
 2. The client id must be unique otherwise the clients will be disconnected.
 3. The publisher must use the same broker and topic as the client.
+4. Duplicate messages are suppressed. Messages that are sent with QoS 1 can be sent multiple times, 
+so the app checks if the message is the same as the previous message before saving and displaying in
+the message list. However, notifications may still be displayed.
