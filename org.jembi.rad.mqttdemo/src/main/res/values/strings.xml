@@ -1,0 +1,32 @@
+<resources>
+    <string name="app_name">RAD MQTT DEMO</string>
+    <string name="view_header">Subscribe</string>
+    <string name="action_settings">Settings</string>
+    <string name="topic_label">Topic</string>
+    <string name="topic_name">org/jembi/rad/mqttdemo/topic</string>
+    <string name="server_uri_label">Server URI</string>
+    <string name="server_uri">tcp://iot.eclipse.org:1883</string>
+    <string name="client_id_label">Client ID</string>
+    <string name="settings_header">Subscribe</string>
+    <string name="title_offline_settings">Offline</string>
+    <string name="title_activity_settings">Settings</string>
+
+    <!-- Strings related to Notication -->
+    <string name="alert_notification_ticker">A new Demo MQTT message has arrived</string>
+    <string name="alert_notification_title">A new Demo MQTT message</string>
+    <string name="alert_notification_subtitle">On channel %1$s</string>
+
+    <!-- Strings related to Settings -->
+    <!-- Example General settings -->
+    <string name="pref_header_general">General</string>
+    <string name="pref_title_display_name">Display name</string>
+    <string name="pref_default_display_name">John Smith</string>
+    <!-- Example settings for Notifications -->
+    <string name="pref_header_notifications">Notifications</string>
+    <string name="pref_title_new_message_notifications">New message notifications</string>
+    <string name="pref_title_ringtone">Ringtone</string>
+    <string name="pref_ringtone_silent">Silent</string>
+    <string name="pref_title_vibrate">Vibrate</string>
+    <string name="pref_header_connections">Connection Settings</string>
+
+</resources>

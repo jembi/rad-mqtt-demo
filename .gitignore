@@ -24,6 +24,9 @@ build/
 # Ignore Gradle GUI config
 gradle-app.setting
 
+# Eclipse project files
+.classpath
+.project
 
 # Local configuration file (sdk path, etc)
 local.properties
@@ -93,5 +96,3 @@ hs_err_pid*
 **/*.iml
 *.class
 
-
-org.eclipse.paho.android.sample/libs/
